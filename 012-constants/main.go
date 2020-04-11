@@ -15,9 +15,9 @@ const (
 
 // Typed constants
 const (
-	a3 int = 3
+	a3 int     = 3
 	b3 float64 = 3.3
-	c3 string = "C"
+	c3 string  = "C"
 )
 
 func main() {
