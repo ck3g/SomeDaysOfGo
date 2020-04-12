@@ -45,4 +45,17 @@ func main() {
 	fmt.Println(employeeBob)
 	fmt.Println(employeeAlice)
 	fmt.Println()
+
+	// Anonymous struct
+	robert := struct {
+		first string
+		last  string
+		age   int
+	}{
+		first: "Robert",
+		last:  "White",
+		age:   58,
+	}
+	fmt.Println(robert)
+	fmt.Println()
 }
