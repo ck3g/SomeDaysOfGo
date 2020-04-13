@@ -5,13 +5,20 @@ import (
 	"fmt"
 )
 
-type person struct {
-	First string
-	Last  string
-	age   int
+func main() {
+	example1()
 }
 
-func main() {
+func example1() {
+	fmt.Printf("=== Example #1 =============\n\n")
+	fmt.Println("Marshaling a JSON with unexported value (age)")
+
+	type person struct {
+		First string
+		Last  string
+		age   int
+	}
+
 	alice := person{
 		First: "Alice",
 		Last:  "White",
@@ -25,10 +32,9 @@ func main() {
 	people := []person{alice, bob}
 	fmt.Printf("%+v\n\n", people)
 
-	rawJSON, err := json.Marshal(people) // Does't marhall lowercase fields (because they are not exported)
+	jsonString, err := json.Marshal(people) // Does't marhall lowercase fields (because they are not exported)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
-	fmt.Printf("%+v\n\n", string(rawJSON)) // Doesn't contain age (because age is not exported)
-
+	fmt.Printf("%+v\n\n", string(jsonString)) // Doesn't contain age (because age is not exported)
 }
