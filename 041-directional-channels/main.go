@@ -38,4 +38,24 @@ func main() {
 	// fmt.Println(<-c3) // Nothing to read: all goroutines are asleep - deadlock!
 	fmt.Printf("%T\n", c3)
 	fmt.Println()
+
+	// Using directional channels
+	fmt.Println("Using directional channels")
+	fmt.Println()
+
+	ch := make(chan int)
+
+	go sendToChannel(ch)
+	receiveFromChannel(ch)
+
+	fmt.Println("About to exit")
+
+}
+
+func sendToChannel(c chan<- int) {
+	c <- 101
+}
+
+func receiveFromChannel(c <-chan int) {
+	fmt.Println("value received:", <-c)
 }
