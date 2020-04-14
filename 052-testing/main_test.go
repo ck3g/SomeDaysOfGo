@@ -19,3 +19,23 @@ func TestMessageHasManyArguments(t *testing.T) {
 		t.Error("Expected", expected, "got", actual)
 	}
 }
+
+func TestMessageWithTableTests(t *testing.T) {
+	type test struct {
+		data     []string
+		expected string
+	}
+
+	tests := []test{
+		test{[]string{""}, ""},
+		test{[]string{"message"}, "message"},
+		test{[]string{"Here", "is", "the", "message"}, "Here is the message"},
+	}
+
+	for _, tst := range tests {
+		actual := Message(tst.data...)
+		if tst.expected != actual {
+			t.Error("Expected", tst.expected, "got", actual)
+		}
+	}
+}
