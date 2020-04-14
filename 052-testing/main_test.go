@@ -2,6 +2,10 @@ package main
 
 import "testing"
 
+// To check test coverage in HTML type run the following commands:
+// $ go test --coverprofile c.out
+// go tool cover -html=c.out
+
 func TestMessageHasASingleArgument(t *testing.T) {
 	actual := Message("message")
 	expected := "message"
