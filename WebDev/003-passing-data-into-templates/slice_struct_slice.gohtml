@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>More complex data example</title>
+  </head>
+  <body>
+    <h3>People</h3>
+    <ul>
+      {{range .People}}
+      <li>{{.Name}} - {{.Age}}</li>
+      {{end}}
+    </ul>
+
+    <h3>Companies</h3>
+    <ul>
+      {{range .Companies}}
+      <li>{{.Name}} - {{.HeadOffice}}</li>
+      {{end}}
+    </ul>
+  </body>
+</html>
