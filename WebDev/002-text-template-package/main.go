@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Parse a template from a file
-	tpl, err := template.ParseFiles("WebDev/002-html-template-package/tpl.gohtml")
+	tpl, err := template.ParseFiles("WebDev/002-text-template-package/tpl.gohtml")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// Execute the template into a file
-	f, err := os.Create("WebDev/002-html-template-package/index.html")
+	f, err := os.Create("WebDev/002-text-template-package/index.html")
 	if err != nil {
 		log.Println("Error creating file", err)
 	}
@@ -35,7 +35,7 @@ func main() {
 	fmt.Println("\n\n------------------")
 
 	// Once we have a template we can parse more files into it
-	tpl, err = tpl.ParseFiles("WebDev/002-html-template-package/description.gohtml")
+	tpl, err = tpl.ParseFiles("WebDev/002-text-template-package/description.gohtml")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -49,7 +49,7 @@ func main() {
 	fmt.Println("\n\n------------------")
 
 	// Here we parse a bunch of files using ParseGlob
-	tpl, err = template.ParseGlob("WebDev/002-html-template-package/*.gohtml")
+	tpl, err = template.ParseGlob("WebDev/002-text-template-package/*.gohtml")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -69,7 +69,7 @@ func main() {
 	fmt.Println("\n\n------------------")
 
 	// We can use teamplate.Must to skip error checking block
-	tpl = template.Must(template.ParseGlob("WebDev/002-html-template-package/description.gohtml"))
+	tpl = template.Must(template.ParseGlob("WebDev/002-text-template-package/description.gohtml"))
 
 	// Now we can execute a specific template
 	err = tpl.ExecuteTemplate(os.Stdout, "description.gohtml", nil)
