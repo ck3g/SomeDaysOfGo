@@ -15,7 +15,7 @@
     <h3>Companies</h3>
     <ul>
       {{range .Companies}}
-      <li>{{.Name}} ({{first3 .Name}}) - {{.HeadOffice}}</li>
+      <li>{{.Name}} ({{first3 .Name | toUpper}}) - {{.HeadOffice}}</li>
       {{end}}
     </ul>
   </body>
