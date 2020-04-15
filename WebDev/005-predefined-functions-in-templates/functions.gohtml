@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>predefined global functions</title>
+  </head>
+  <body>
+    {{/* `index` uses an item by its index from passed data */}}
+    {{index . 2}}
+    {{index . 0}}
+    {{index . 1}}
+
+    <ul>
+    {{range $index, $element := .}}
+      {{/* Renders only items with index < 3 */}}
+      {{if lt $index 3}}
+        <li>{{$element}}</li>
+      {{end}}
+    {{end}}
+    </ul>
+  </body>
+</html>
+
+{{/* More functions here https://golang.org/pkg/text/template/#hdr-Functions */}}
