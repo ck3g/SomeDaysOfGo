@@ -10,6 +10,7 @@ func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/iocopy", ioCopy)
 	http.HandleFunc("/servecontent", serveContent)
+	http.HandleFunc("/servefile", serveFile)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -22,6 +23,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		<ul>
 			<li>/iocopy</li>
 			<li>/servecontent</li>
+			<li>/servefile</li>
 		</ul>
 	`)
 }
@@ -52,4 +54,8 @@ func serveContent(w http.ResponseWriter, req *http.Request) {
 	}
 
 	http.ServeContent(w, req, f.Name(), fi.ModTime(), f)
+}
+
+func serveFile(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, "WebDev/assets/firefox.jpg")
 }
