@@ -11,6 +11,7 @@ func main() {
 	http.HandleFunc("/iocopy", ioCopy)
 	http.HandleFunc("/servecontent", serveContent)
 	http.HandleFunc("/servefile", serveFile)
+	http.Handle("/resources/", http.StripPrefix("/resources", http.FileServer(http.Dir("./WebDev/assets/"))))
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -24,6 +25,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 			<li>/iocopy</li>
 			<li>/servecontent</li>
 			<li>/servefile</li>
+			<li>/resources</li>
 		</ul>
 	`)
 }
