@@ -9,6 +9,7 @@ import (
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/iocopy", ioCopy)
+	http.HandleFunc("/servecontent", serveContent)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -20,6 +21,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		<div>Try different urls</div?
 		<ul>
 			<li>/iocopy</li>
+			<li>/servecontent</li>
 		</ul>
 	`)
 }
@@ -33,4 +35,21 @@ func ioCopy(w http.ResponseWriter, req *http.Request) {
 	defer f.Close()
 
 	io.Copy(w, f)
+}
+
+func serveContent(w http.ResponseWriter, req *http.Request) {
+	f, err := os.Open("WebDev/assets/firefox.jpg")
+	if err != nil {
+		http.Error(w, "file not found", 404)
+		return
+	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+	if err != nil {
+		http.Error(w, "file not found", 404)
+		return
+	}
+
+	http.ServeContent(w, req, f.Name(), fi.ModTime(), f)
 }
