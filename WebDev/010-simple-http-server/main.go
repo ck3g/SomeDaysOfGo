@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type requestInfo struct {
+	method string
+	uri    string
+}
+
 func main() {
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -29,13 +34,14 @@ func handle(conn net.Conn) {
 	defer conn.Close()
 
 	// read request
-	request(conn)
+	request := handleRequest(conn)
 
 	// write response
-	respond(conn)
+	handleResponse(conn, request)
 }
 
-func request(conn net.Conn) {
+func handleRequest(conn net.Conn) requestInfo {
+	var ri requestInfo
 	i := 0
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
@@ -47,6 +53,8 @@ func request(conn net.Conn) {
 			uri := strings.Fields(ln)[1]
 			fmt.Println("***METHOD", method)
 			fmt.Println("***URI", uri)
+			ri.method = method
+			ri.uri = uri
 		}
 		if ln == "" {
 			// headers are done
@@ -54,14 +62,27 @@ func request(conn net.Conn) {
 		}
 		i++
 	}
+
+	return ri
 }
 
-func respond(conn net.Conn) {
-	body := `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Hello World</strong></body></html>`
+func handleResponse(conn net.Conn, request requestInfo) {
+	htmlBody := buildHTMLBody(request)
+	responseBody := `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body>` + htmlBody + `</body></html>`
 
 	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(responseBody))
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
-	fmt.Fprint(conn, body)
+	fmt.Fprint(conn, responseBody)
+}
+
+func buildHTMLBody(request requestInfo) string {
+	body := `
+<div><strong>Request info</strong></div>
+<div>METHOD: ` + request.method + `</div>
+<div>URI: ` + request.uri + `</div>
+`
+
+	return body
 }
