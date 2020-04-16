@@ -13,7 +13,14 @@ type requestInfo struct {
 	uri    string
 }
 
+var routes map[string]func() string
+
 func main() {
+	routes = map[string]func() string{
+		"GET /":      homePage,
+		"GET /about": aboutPage,
+	}
+
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -78,11 +85,33 @@ func handleResponse(conn net.Conn, request requestInfo) {
 }
 
 func buildHTMLBody(request requestInfo) string {
+	var pageContent string
+
+	route := request.method + " " + request.uri
+	page, ok := routes[route]
+	if ok {
+		pageContent = page()
+	} else {
+		pageContent = notFoundPage()
+	}
+
 	body := `
 <div><strong>Request info</strong></div>
 <div>METHOD: ` + request.method + `</div>
 <div>URI: ` + request.uri + `</div>
-`
+` + pageContent
 
 	return body
+}
+
+func homePage() string {
+	return `<div>This is home page</div>`
+}
+
+func aboutPage() string {
+	return `<div>This is about page</div>`
+}
+
+func notFoundPage() string {
+	return `<div>404: Page Not Found</div>`
 }
