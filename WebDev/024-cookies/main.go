@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -17,15 +17,15 @@ func set(w http.ResponseWriter, req *http.Request) {
 		Value: "some value",
 		Path:  "/",
 	})
-	fmt.Println(w, "COOKIE WRITTEN - CHECK YOUR BROWSER")
+	io.WriteString(w, "COOKIE WRITTEN - CHECK YOUR BROWSER")
 }
 
 func read(w http.ResponseWriter, req *http.Request) {
 	c, err := req.Cookie("my-cookie")
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+	if err == http.ErrNoCookie {
+		io.WriteString(w, "A cookie didn't set yet")
 		return
 	}
 
-	fmt.Println(w, "YOUR COOKIE", c)
+	io.WriteString(w, "YOUR COOKIE"+c.String())
 }
