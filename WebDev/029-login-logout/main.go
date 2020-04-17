@@ -22,7 +22,7 @@ var dbUsers = map[string]user{}      // user ID, user
 var dbSessions = map[string]string{} // session ID, user ID
 
 func init() {
-	tpl = template.Must(template.ParseGlob("WebDev/029-login/*.gohtml"))
+	tpl = template.Must(template.ParseGlob("WebDev/029-login-logout/*.gohtml"))
 	bs, _ := bcrypt.GenerateFromPassword([]byte("demo"), bcrypt.MinCost)
 	dbUsers["demo"] = user{"demo", bs, "Demo", "Demo"}
 }
@@ -32,6 +32,7 @@ func main() {
 	http.HandleFunc("/bar", bar)
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":8080", nil)
 }
@@ -131,4 +132,24 @@ func login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	tpl.ExecuteTemplate(w, "login.gohtml", nil)
+}
+
+func logout(w http.ResponseWriter, req *http.Request) {
+	if !alreadyLoggedIn(req) {
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	cookie, _ := req.Cookie("session")
+	// delete the session
+	delete(dbSessions, cookie.Value)
+	// remove the cookie
+	cookie = &http.Cookie{
+		Name:   "session",
+		Value:  "",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, cookie)
+
+	http.Redirect(w, req, "/login", http.StatusSeeOther)
 }
