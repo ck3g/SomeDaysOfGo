@@ -2,5 +2,6 @@
 048-errors-logging/log
 052-testing/c.out
 
+WebDev/uploads/*
 WebDev/001-templates/index.html
 WebDev/002-text-template-package/index.html
