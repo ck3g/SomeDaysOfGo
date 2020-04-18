@@ -15,7 +15,7 @@ var err error
 func main() {
 	// $ mysql
 	// mysql> CREATE DATABASE goplayground;
-	db, err := sql.Open("mysql", "root@/goplayground")
+	db, err = sql.Open("mysql", "root@/goplayground")
 	handleError(err)
 	defer db.Close()
 
