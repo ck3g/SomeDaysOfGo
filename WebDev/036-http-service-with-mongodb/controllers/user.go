@@ -11,6 +11,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+const docName = "some-days-of-go-playground"
+
 // UserController defines a container for the controller
 type UserController struct {
 	session *mgo.Session
@@ -23,11 +25,23 @@ func NewUserController(s *mgo.Session) *UserController {
 
 // GetUser defines and endpoint to read info about the user
 func (uc UserController) GetUser(w http.ResponseWriter, req *http.Request, p httprouter.Params) {
-	user := models.User{
-		Name:   "John Doe",
-		Gender: "male",
-		Age:    32,
-		ID:     bson.ObjectId(p.ByName("id")),
+	id := p.ByName("id")
+
+	// Verify id is ObhectId hex representation, otherwise return status not found
+	if !bson.IsObjectIdHex(id) {
+		w.WriteHeader(http.StatusNotFound) // 404
+		return
+	}
+
+	// ObjectIdHex returns an ObjectId rom the provided hex representation
+	oid := bson.ObjectIdHex(id)
+
+	user := models.User{}
+
+	err := uc.session.DB(docName).C("users").FindId(oid).One(&user)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 
 	userJSON, err := json.Marshal(user)
@@ -47,7 +61,7 @@ func (uc UserController) CreateUser(w http.ResponseWriter, req *http.Request, _ 
 	json.NewDecoder(req.Body).Decode(&user)
 
 	user.ID = bson.NewObjectId()
-	uc.session.DB("some-days-of-go-playground").C("users").Insert(user)
+	uc.session.DB(docName).C("users").Insert(user)
 
 	userJSON, _ := json.Marshal(user)
 
