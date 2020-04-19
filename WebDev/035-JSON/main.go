@@ -47,12 +47,24 @@ type city struct {
 
 type cities []city
 
+type taggedCities []struct {
+	Postal    string  `json:"postal"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Address   string  `json:"address"`
+	City      string  `json:"city"`
+	State     string  `json:"state"`
+	Zip       string  `json:"zip"`
+	Country   string  `json:"country"`
+}
+
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/marshal", jsonMarshal)
 	http.HandleFunc("/encode", jsonEncode)
 	http.HandleFunc("/unmarshal", jsonUnmarshal)
 	http.HandleFunc("/unmarshal-array", jsonUnmarshalArray)
+	http.HandleFunc("/unmarshal-array-tagged", jsonUnmarshalArrayTagged)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -64,6 +76,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 		<div><a href="/encode">Encode</a></div>
 		<div><a href="/unmarshal">Unmarshal</a></div>
 		<div><a href="/unmarshal-array">Unmarshal an Array</a></div>
+		<div><a href="/unmarshal-array-tagged">Unmarshal an Array Tagged</a></div>
 	`)
 }
 
@@ -115,6 +128,19 @@ func jsonUnmarshal(w http.ResponseWriter, req *http.Request) {
 func jsonUnmarshalArray(w http.ResponseWriter, req *http.Request) {
 	var data cities
 	received := `[{"precision":"zip","Latitude":37.7668,"Longitude":-122.3959,"Address":"","City":"SAN FRANCISCO","State":"CA","Zip":"94107","Country":"US"},{"precision":"zip","Latitude":37.371991,"Longitude":-122.02602,"Address":"","City":"SUNNYVALE","State":"CA","Zip":"94085","Country":"US"}]`
+
+	err := json.Unmarshal([]byte(received), &data)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Fprintln(w, received)
+	fmt.Fprintf(w, "%+v\n", data)
+}
+
+func jsonUnmarshalArrayTagged(w http.ResponseWriter, req *http.Request) {
+	var data taggedCities
+	received := `[{"postal":"zip","latitude":37.7668,"longitude":-122.3959,"address":"","city":"SAN FRANCISCO","state":"CA","zip":"94107","country":"US"},{"postal":"zip","latitude":37.371991,"longitude":-122.02602,"address":"","city":"SUNNYVALE","state":"CA","zip":"94085","country":"US"}]`
 
 	err := json.Unmarshal([]byte(received), &data)
 	if err != nil {
