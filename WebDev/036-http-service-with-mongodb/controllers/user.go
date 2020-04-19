@@ -46,7 +46,8 @@ func (uc UserController) CreateUser(w http.ResponseWriter, req *http.Request, _ 
 
 	json.NewDecoder(req.Body).Decode(&user)
 
-	user.ID = "503"
+	user.ID = bson.NewObjectId()
+	uc.session.DB("some-days-of-go-playground").C("users").Insert(user)
 
 	userJSON, _ := json.Marshal(user)
 
