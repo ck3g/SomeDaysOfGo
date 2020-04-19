@@ -15,6 +15,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -26,10 +27,24 @@ type person struct {
 	Items []string
 }
 
+type thumbnail struct {
+	URL           string
+	Height, Width int
+}
+
+type img struct {
+	Width, Height int
+	Title         string
+	Thumbnail     thumbnail
+	Animated      bool
+	IDs           []int
+}
+
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/marshal", jsonMarshal)
 	http.HandleFunc("/encode", jsonEncode)
+	http.HandleFunc("/unmarshal", jsonUnmarshal)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -39,6 +54,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 		<h2>Here is the things to try</h2>
 		<div><a href="/marshal">Marshal</a></div>
 		<div><a href="/encode">Encode</a></div>
+		<div><a href="/unmarshal">Unmarshal</a></div>
 	`)
 }
 
@@ -67,4 +83,22 @@ func jsonEncode(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func jsonUnmarshal(w http.ResponseWriter, req *http.Request) {
+	var data img
+	received := `{"Width":800,"Height":600,"Title":"View from 15th Floor","Thumbnail":{"Url":"http://www.example.com/image/481989943","Height":125,"Width":100},"Animated":false,"IDs":[116,943,234,38793]}`
+
+	err := json.Unmarshal([]byte(received), &data)
+	if err != nil {
+		log.Fatalln("error unmarshaling", err)
+	}
+
+	fmt.Fprintf(w, "%+v\n", data)
+
+	for i, v := range data.IDs {
+		fmt.Fprintln(w, i, v)
+	}
+
+	fmt.Fprintln(w, data.Thumbnail.URL)
 }
