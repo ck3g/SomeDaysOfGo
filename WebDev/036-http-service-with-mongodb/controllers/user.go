@@ -72,6 +72,22 @@ func (uc UserController) CreateUser(w http.ResponseWriter, req *http.Request, _ 
 
 // DeleteUser defines an endpoint to delete the user
 func (uc UserController) DeleteUser(w http.ResponseWriter, req *http.Request, p httprouter.Params) {
+	id := p.ByName("id")
+
+	if !bson.IsObjectIdHex(id) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	oid := bson.IsObjectIdHex(id)
+
+	// Delete user
+	err := uc.session.DB(docName).C("users").RemoveId(oid)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Write code to delete user\n")
+	fmt.Fprint(w, "Deleted user", oid, "\n")
 }
