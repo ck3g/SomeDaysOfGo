@@ -7,14 +7,17 @@ import (
 
 	"github.com/ck3g/SomeDaysOfGo/WebDev/036-http-service-with-mongodb/models"
 	"github.com/julienschmidt/httprouter"
+	"gopkg.in/mgo.v2"
 )
 
 // UserController defines a container for the controller
-type UserController struct{}
+type UserController struct {
+	session *mgo.Session
+}
 
 // NewUserController initializes the controller
-func NewUserController() *UserController {
-	return &UserController{}
+func NewUserController(s *mgo.Session) *UserController {
+	return &UserController{s}
 }
 
 // GetUser defines and endpoint to read info about the user
