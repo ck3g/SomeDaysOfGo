@@ -1,5 +1,14 @@
 # HTTP Service with MongoDB
 
+## Requirements
+
+* MongoDB
+
+```
+$ go get github.com/julienschmidt/httprouter
+$ go get gopkg.in/mgo.v2
+```
+
 ## Usage
 
 ### Read user
