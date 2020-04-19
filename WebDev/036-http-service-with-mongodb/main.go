@@ -13,6 +13,7 @@ func main() {
 	r := httprouter.New()
 	r.GET("/", index)
 	r.GET("/user/:id", getUser)
+	r.POST("/user", createUser)
 	http.ListenAndServe("localhost:8080", r)
 }
 
@@ -48,5 +49,19 @@ func getUser(w http.ResponseWriter, req *http.Request, p httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "%s\n", userJSON)
+}
+
+func createUser(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	user := models.User{}
+
+	json.NewDecoder(req.Body).Decode(&user)
+
+	user.ID = "503"
+
+	userJSON, _ := json.Marshal(user)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated) // 201
 	fmt.Fprintf(w, "%s\n", userJSON)
 }
