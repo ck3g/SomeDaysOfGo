@@ -8,6 +8,7 @@ import (
 	"github.com/ck3g/SomeDaysOfGo/WebDev/036-http-service-with-mongodb/models"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // UserController defines a container for the controller
@@ -26,7 +27,7 @@ func (uc UserController) GetUser(w http.ResponseWriter, req *http.Request, p htt
 		Name:   "John Doe",
 		Gender: "male",
 		Age:    32,
-		ID:     p.ByName("id"),
+		ID:     bson.ObjectId(p.ByName("id")),
 	}
 
 	userJSON, err := json.Marshal(user)
