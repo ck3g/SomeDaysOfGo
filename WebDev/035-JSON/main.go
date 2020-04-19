@@ -40,11 +40,19 @@ type img struct {
 	IDs           []int
 }
 
+type city struct {
+	Latitude, Longitude float64
+	City                string
+}
+
+type cities []city
+
 func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/marshal", jsonMarshal)
 	http.HandleFunc("/encode", jsonEncode)
 	http.HandleFunc("/unmarshal", jsonUnmarshal)
+	http.HandleFunc("/unmarshal-array", jsonUnmarshalArray)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -55,6 +63,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 		<div><a href="/marshal">Marshal</a></div>
 		<div><a href="/encode">Encode</a></div>
 		<div><a href="/unmarshal">Unmarshal</a></div>
+		<div><a href="/unmarshal-array">Unmarshal an Array</a></div>
 	`)
 }
 
@@ -101,4 +110,17 @@ func jsonUnmarshal(w http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Fprintln(w, data.Thumbnail.URL)
+}
+
+func jsonUnmarshalArray(w http.ResponseWriter, req *http.Request) {
+	var data cities
+	received := `[{"precision":"zip","Latitude":37.7668,"Longitude":-122.3959,"Address":"","City":"SAN FRANCISCO","State":"CA","Zip":"94107","Country":"US"},{"precision":"zip","Latitude":37.371991,"Longitude":-122.02602,"Address":"","City":"SUNNYVALE","State":"CA","Zip":"94085","Country":"US"}]`
+
+	err := json.Unmarshal([]byte(received), &data)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Fprintln(w, received)
+	fmt.Fprintf(w, "%+v\n", data)
 }
