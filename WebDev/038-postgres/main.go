@@ -33,6 +33,7 @@ type Book struct {
 
 func main() {
 	http.HandleFunc("/books", booksIndex)
+	http.HandleFunc("/books/show", bookShow)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -68,4 +69,32 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 	for _, book := range books {
 		fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
 	}
+}
+
+func bookShow(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	isbn := r.FormValue("isbn")
+	if isbn == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	row := db.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
+
+	book := Book{}
+	err := row.Scan(&book.isbn, &book.title, &book.author, &book.price)
+	switch {
+	case err == sql.ErrNoRows:
+		http.NotFound(w, r)
+		return
+	case err != nil:
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
 }
