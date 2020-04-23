@@ -3,9 +3,25 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 
 	_ "github.com/lib/pq"
 )
+
+var db *sql.DB
+
+func init() {
+	var err error
+	db, err = sql.Open("postgres", "postgres://localhost/go_bookstore?sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+
+	if err = db.Ping(); err != nil {
+		panic(err)
+	}
+	fmt.Println("You connected to your database.")
+}
 
 // Book model
 type Book struct {
@@ -16,21 +32,20 @@ type Book struct {
 }
 
 func main() {
-	db, err := sql.Open("postgres", "postgres://localhost/go_bookstore?sslmode=disable")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	http.HandleFunc("/books", booksIndex)
+	http.ListenAndServe(":8080", nil)
+}
 
-	err = db.Ping()
-	if err != nil {
-		panic(err)
+func booksIndex(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
 	}
-	fmt.Println("You connected to your database.")
 
 	rows, err := db.Query("SELECT * FROM books;")
 	if err != nil {
-		panic(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
 	defer rows.Close()
 
@@ -39,16 +54,18 @@ func main() {
 		book := Book{}
 		err := rows.Scan(&book.isbn, &book.title, &book.author, &book.price) // order matters
 		if err != nil {
-			panic(err)
+			http.Error(w, http.StatusText(500), 500)
+			return
 		}
 		books = append(books, book)
 	}
 
 	if err = rows.Err(); err != nil {
-		panic(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
 	}
 
 	for _, book := range books {
-		fmt.Printf("%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
+		fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
 	}
 }
