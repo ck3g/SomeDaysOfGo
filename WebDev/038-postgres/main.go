@@ -3,18 +3,10 @@ package main
 import (
 	"database/sql"
 	"net/http"
-	"strconv"
 
+	"github.com/ck3g/SomeDaysOfGo/WebDev/038-postgres/books"
 	"github.com/ck3g/SomeDaysOfGo/WebDev/038-postgres/config"
 )
-
-// Book model
-type Book struct {
-	Isbn   string
-	Title  string
-	Author string
-	Price  float32
-}
 
 func main() {
 	http.HandleFunc("/", index)
@@ -38,30 +30,12 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := config.DB.Query("SELECT * FROM books;")
+	bks, err := books.All()
 	if err != nil {
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-	defer rows.Close()
-
-	books := make([]Book, 0)
-	for rows.Next() {
-		book := Book{}
-		err := rows.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price) // order matters
-		if err != nil {
-			http.Error(w, http.StatusText(500), 500)
-			return
-		}
-		books = append(books, book)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 	}
 
-	if err = rows.Err(); err != nil {
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-
-	config.TPL.ExecuteTemplate(w, "books.gohtml", books)
+	config.TPL.ExecuteTemplate(w, "books.gohtml", bks)
 }
 
 func bookShow(w http.ResponseWriter, r *http.Request) {
@@ -70,16 +44,7 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isbn := r.FormValue("isbn")
-	if isbn == "" {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	row := config.DB.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
-
-	book := Book{}
-	err := row.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price)
+	book, err := books.One(r)
 	switch {
 	case err == sql.ErrNoRows:
 		http.NotFound(w, r)
@@ -102,34 +67,9 @@ func bookCreateProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get form values
-	book := Book{}
-	book.Isbn = r.FormValue("isbn")
-	book.Title = r.FormValue("title")
-	book.Author = r.FormValue("author")
-	price := r.FormValue("price")
-
-	// validate form values
-	if book.Isbn == "" || book.Title == "" || book.Author == "" || price == "" {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	// convert form values
-	f64, err := strconv.ParseFloat(price, 32)
+	book, err := books.Create(r)
 	if err != nil {
-		http.Error(w, http.StatusText(406)+"Please hit back and enter a number for the price", http.StatusNotAcceptable)
-		return
-	}
-	book.Price = float32(f64)
-
-	// insert values
-	_, err = config.DB.Exec(
-		"INSERT INTO books (isbn, title, author, price) VALUES ($1, $2, $3, $4)",
-		book.Isbn, book.Title, book.Author, book.Price,
-	)
-	if err != nil {
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		http.Error(w, http.StatusText(406), http.StatusNotAcceptable)
 		return
 	}
 
@@ -143,16 +83,7 @@ func bookUpdateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isbn := r.FormValue("isbn")
-	if isbn == "" {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	row := config.DB.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
-
-	book := Book{}
-	err := row.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price)
+	book, err := books.One(r)
 	switch {
 	case err == sql.ErrNoRows:
 		http.NotFound(w, r)
@@ -171,35 +102,9 @@ func bookUpdateProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get form values
-	// get form values
-	book := Book{}
-	book.Isbn = r.FormValue("isbn")
-	book.Title = r.FormValue("title")
-	book.Author = r.FormValue("author")
-	p := r.FormValue("price")
-
-	// validate form values
-	if book.Isbn == "" || book.Title == "" || book.Author == "" || p == "" {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	// convert form values
-	f64, err := strconv.ParseFloat(p, 32)
+	book, err := books.Update(r)
 	if err != nil {
-		http.Error(w, http.StatusText(406)+"Please hit back and enter a number for the price", http.StatusNotAcceptable)
-		return
-	}
-	book.Price = float32(f64)
-
-	// insert values
-	_, err = config.DB.Exec(
-		"UPDATE books SET isbn=$1, title=$2, author=$3, price=$4 WHERE isbn=$1;",
-		book.Isbn, book.Title, book.Author, book.Price,
-	)
-	if err != nil {
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		http.Error(w, http.StatusText(406), http.StatusNotAcceptable)
 		return
 	}
 
@@ -213,17 +118,9 @@ func bookDeleteProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isbn := r.FormValue("isbn")
-	if isbn == "" {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	// delete book
-	_, err := config.DB.Exec("DELETE FROM books WHERE isbn=$1;", isbn)
+	err := books.Delete(r)
 	if err != nil {
-		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
-		return
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 	}
 
 	http.Redirect(w, r, "/books", http.StatusSeeOther)
