@@ -32,9 +32,14 @@ type Book struct {
 }
 
 func main() {
+	http.HandleFunc("/", index)
 	http.HandleFunc("/books", booksIndex)
 	http.HandleFunc("/books/show", bookShow)
 	http.ListenAndServe(":8080", nil)
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/books", http.StatusSeeOther)
 }
 
 func booksIndex(w http.ResponseWriter, r *http.Request) {
