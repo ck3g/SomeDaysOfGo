@@ -25,10 +25,10 @@ func init() {
 
 // Book model
 type Book struct {
-	isbn   string
-	title  string
-	author string
-	price  float32
+	Isbn   string
+	Title  string
+	Author string
+	Price  float32
 }
 
 func main() {
@@ -53,7 +53,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 	books := make([]Book, 0)
 	for rows.Next() {
 		book := Book{}
-		err := rows.Scan(&book.isbn, &book.title, &book.author, &book.price) // order matters
+		err := rows.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price) // order matters
 		if err != nil {
 			http.Error(w, http.StatusText(500), 500)
 			return
@@ -67,7 +67,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, book := range books {
-		fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
+		fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.Isbn, book.Title, book.Author, book.Price)
 	}
 }
 
@@ -86,7 +86,7 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
 
 	book := Book{}
-	err := row.Scan(&book.isbn, &book.title, &book.author, &book.price)
+	err := row.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price)
 	switch {
 	case err == sql.ErrNoRows:
 		http.NotFound(w, r)
@@ -96,5 +96,5 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.isbn, book.title, book.author, book.price)
+	fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.Isbn, book.Title, book.Author, book.Price)
 }
