@@ -103,5 +103,5 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.Isbn, book.Title, book.Author, book.Price)
+	tpl.ExecuteTemplate(w, "show.gohtml", book)
 }
