@@ -4,16 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/ck3g/SomeDaysOfGo/WebDev/038-postgres/config"
 )
-
-var tpl *template.Template
-
-func init() {
-	tpl = template.Must(template.ParseGlob("templates/*.gohtml"))
-}
 
 // Book model
 type Book struct {
@@ -68,7 +61,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(w, "books.gohtml", books)
+	config.TPL.ExecuteTemplate(w, "books.gohtml", books)
 }
 
 func bookShow(w http.ResponseWriter, r *http.Request) {
@@ -96,11 +89,11 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(w, "show.gohtml", book)
+	config.TPL.ExecuteTemplate(w, "show.gohtml", book)
 }
 
 func bookCreateForm(w http.ResponseWriter, r *http.Request) {
-	tpl.ExecuteTemplate(w, "create.gohtml", nil)
+	config.TPL.ExecuteTemplate(w, "create.gohtml", nil)
 }
 
 func bookCreateProcess(w http.ResponseWriter, r *http.Request) {
@@ -141,7 +134,7 @@ func bookCreateProcess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// confirm insertion
-	tpl.ExecuteTemplate(w, "created.gohtml", book)
+	config.TPL.ExecuteTemplate(w, "created.gohtml", book)
 }
 
 func bookUpdateForm(w http.ResponseWriter, r *http.Request) {
@@ -169,7 +162,7 @@ func bookUpdateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(w, "update.gohtml", book)
+	config.TPL.ExecuteTemplate(w, "update.gohtml", book)
 }
 
 func bookUpdateProcess(w http.ResponseWriter, r *http.Request) {
@@ -211,7 +204,7 @@ func bookUpdateProcess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// confirm update
-	tpl.ExecuteTemplate(w, "updated.gohtml", book)
+	config.TPL.ExecuteTemplate(w, "updated.gohtml", book)
 }
 
 func bookDeleteProcess(w http.ResponseWriter, r *http.Request) {
