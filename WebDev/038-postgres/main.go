@@ -39,6 +39,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/books", booksIndex)
 	http.HandleFunc("/books/show", bookShow)
+	http.HandleFunc("/books/create", bookCreateForm)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -104,4 +105,8 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tpl.ExecuteTemplate(w, "show.gohtml", book)
+}
+
+func bookCreateForm(w http.ResponseWriter, r *http.Request) {
+	tpl.ExecuteTemplate(w, "create.gohtml", nil)
 }

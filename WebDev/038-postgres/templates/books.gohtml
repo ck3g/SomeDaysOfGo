@@ -30,5 +30,7 @@
 {{range .}}
 <p><a href="/books/show?isbn={{.Isbn}}">{{.Isbn}}</a> - {{.Title}} - {{.Author}} - €{{.Price}}</p>
 {{end}}
+
+<p class="link"><a href="/books/create">Insert A Book</a></p>
 </body>
 </html>
