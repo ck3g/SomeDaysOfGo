@@ -44,6 +44,7 @@ func main() {
 	http.HandleFunc("/books/create/process", bookCreateProcess)
 	http.HandleFunc("/books/update", bookUpdateForm)
 	http.HandleFunc("/books/update/process", bookUpdateProcess)
+	http.HandleFunc("/books/delete/process", bookDeleteProcess)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -224,4 +225,26 @@ func bookUpdateProcess(w http.ResponseWriter, r *http.Request) {
 
 	// confirm update
 	tpl.ExecuteTemplate(w, "updated.gohtml", book)
+}
+
+func bookDeleteProcess(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	isbn := r.FormValue("isbn")
+	if isbn == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	// delete book
+	_, err := db.Exec("DELETE FROM books WHERE isbn=$1;", isbn)
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/books", http.StatusSeeOther)
 }
