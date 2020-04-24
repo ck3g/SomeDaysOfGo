@@ -2,29 +2,16 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strconv"
 	"text/template"
 
-	_ "github.com/lib/pq"
+	"github.com/ck3g/SomeDaysOfGo/WebDev/038-postgres/config"
 )
 
-var db *sql.DB
 var tpl *template.Template
 
 func init() {
-	var err error
-	db, err = sql.Open("postgres", "postgres://localhost/go_bookstore?sslmode=disable")
-	if err != nil {
-		panic(err)
-	}
-
-	if err = db.Ping(); err != nil {
-		panic(err)
-	}
-	fmt.Println("You connected to your database.")
-
 	tpl = template.Must(template.ParseGlob("templates/*.gohtml"))
 }
 
@@ -58,7 +45,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := db.Query("SELECT * FROM books;")
+	rows, err := config.DB.Query("SELECT * FROM books;")
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 		return
@@ -96,7 +83,7 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	row := db.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
+	row := config.DB.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
 
 	book := Book{}
 	err := row.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price)
@@ -144,7 +131,7 @@ func bookCreateProcess(w http.ResponseWriter, r *http.Request) {
 	book.Price = float32(f64)
 
 	// insert values
-	_, err = db.Exec(
+	_, err = config.DB.Exec(
 		"INSERT INTO books (isbn, title, author, price) VALUES ($1, $2, $3, $4)",
 		book.Isbn, book.Title, book.Author, book.Price,
 	)
@@ -169,7 +156,7 @@ func bookUpdateForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	row := db.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
+	row := config.DB.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
 
 	book := Book{}
 	err := row.Scan(&book.Isbn, &book.Title, &book.Author, &book.Price)
@@ -214,7 +201,7 @@ func bookUpdateProcess(w http.ResponseWriter, r *http.Request) {
 	book.Price = float32(f64)
 
 	// insert values
-	_, err = db.Exec(
+	_, err = config.DB.Exec(
 		"UPDATE books SET isbn=$1, title=$2, author=$3, price=$4 WHERE isbn=$1;",
 		book.Isbn, book.Title, book.Author, book.Price,
 	)
@@ -240,7 +227,7 @@ func bookDeleteProcess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// delete book
-	_, err := db.Exec("DELETE FROM books WHERE isbn=$1;", isbn)
+	_, err := config.DB.Exec("DELETE FROM books WHERE isbn=$1;", isbn)
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
