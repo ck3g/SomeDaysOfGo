@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"text/template"
 
 	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
+var tpl *template.Template
 
 func init() {
 	var err error
@@ -21,6 +23,8 @@ func init() {
 		panic(err)
 	}
 	fmt.Println("You connected to your database.")
+
+	tpl = template.Must(template.ParseGlob("templates/*.gohtml"))
 }
 
 // Book model
@@ -71,9 +75,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, book := range books {
-		fmt.Fprintf(w, "%s, %s, %s, €%.2f\n", book.Isbn, book.Title, book.Author, book.Price)
-	}
+	tpl.ExecuteTemplate(w, "books.gohtml", books)
 }
 
 func bookShow(w http.ResponseWriter, r *http.Request) {
