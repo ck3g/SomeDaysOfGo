@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 	"text/template"
 
 	_ "github.com/lib/pq"
@@ -40,6 +41,7 @@ func main() {
 	http.HandleFunc("/books", booksIndex)
 	http.HandleFunc("/books/show", bookShow)
 	http.HandleFunc("/books/create", bookCreateForm)
+	http.HandleFunc("/books/create/process", bookCreateProcess)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -109,4 +111,45 @@ func bookShow(w http.ResponseWriter, r *http.Request) {
 
 func bookCreateForm(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "create.gohtml", nil)
+}
+
+func bookCreateProcess(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	// get form values
+	book := Book{}
+	book.Isbn = r.FormValue("isbn")
+	book.Title = r.FormValue("title")
+	book.Author = r.FormValue("author")
+	price := r.FormValue("price")
+
+	// validate form values
+	if book.Isbn == "" || book.Title == "" || book.Author == "" || price == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	// convert form values
+	f64, err := strconv.ParseFloat(price, 32)
+	if err != nil {
+		http.Error(w, http.StatusText(406)+"Please hit back and enter a number for the price", http.StatusNotAcceptable)
+		return
+	}
+	book.Price = float32(f64)
+
+	// insert values
+	_, err = db.Exec(
+		"INSERT INTO books (isbn, title, author, price) VALUES ($1, $2, $3, $4)",
+		book.Isbn, book.Title, book.Author, book.Price,
+	)
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	// confirm insertion
+	tpl.ExecuteTemplate(w, "created.gohtml", book)
 }
