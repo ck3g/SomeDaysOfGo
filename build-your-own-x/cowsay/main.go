@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"unicode/utf8"
 )
 
 func main() {
@@ -39,11 +40,13 @@ func main() {
 	      `
 
 	lines = tabsToSpaces(lines)
+	maxwidth := calculateMaxWidth(lines)
 
 	for _, line := range lines {
 		fmt.Println(line)
 	}
 
+	fmt.Println("Max width = ", maxwidth)
 	fmt.Println(cow)
 	fmt.Println()
 }
@@ -58,4 +61,18 @@ func tabsToSpaces(lines []string) []string {
 		ret = append(ret, l)
 	}
 	return ret
+}
+
+// calculateMaxWidth given a slice of strings return the length of the
+// string with max length
+func calculateMaxWidth(lines []string) int {
+	w := 0
+	for _, l := range lines {
+		len := utf8.RuneCountInString(l)
+		if len > w {
+			w = len
+		}
+	}
+
+	return w
 }
