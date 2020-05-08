@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -37,10 +38,24 @@ func main() {
 	        ||     ||
 	      `
 
+	lines = tabsToSpaces(lines)
+
 	for _, line := range lines {
 		fmt.Println(line)
 	}
 
 	fmt.Println(cow)
 	fmt.Println()
+}
+
+// tabsToSpaces converts all tabs found in the strings
+// found in the `lines` slice to 4 spaces, to prevent misalignments in
+// counting the runes
+func tabsToSpaces(lines []string) []string {
+	var ret []string
+	for _, l := range lines {
+		l = strings.Replace(l, "\t", "    ", -1)
+		ret = append(ret, l)
+	}
+	return ret
 }
