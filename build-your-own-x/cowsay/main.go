@@ -41,12 +41,12 @@ func main() {
 
 	lines = tabsToSpaces(lines)
 	maxwidth := calculateMaxWidth(lines)
+	messages := normalizeStringsLength(lines, maxwidth)
 
-	for _, line := range lines {
-		fmt.Println(line)
+	for _, message := range messages {
+		fmt.Println(message)
 	}
 
-	fmt.Println("Max width = ", maxwidth)
 	fmt.Println(cow)
 	fmt.Println()
 }
@@ -75,4 +75,17 @@ func calculateMaxWidth(lines []string) int {
 	}
 
 	return w
+}
+
+// normalizeStringsLength takes a slice of strings and appends
+// to each one a numbef of spaces needed to have them all the same number
+// of runes
+func normalizeStringsLength(lines []string, maxwidth int) []string {
+	var ret []string
+	for _, l := range lines {
+		s := l + strings.Repeat(" ", maxwidth-utf8.RuneCountInString(l))
+		ret = append(ret, s)
+	}
+
+	return ret
 }
