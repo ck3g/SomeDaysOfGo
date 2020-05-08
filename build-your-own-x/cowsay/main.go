@@ -19,17 +19,19 @@ func main() {
 	}
 
 	reader := bufio.NewReader(os.Stdin) // https://godoc.org/bufio#NewReader
-	var output []rune
+
+	var lines []string
 
 	for {
-		input, _, err := reader.ReadRune() // https://godoc.org/bufio#Reader.ReadRune
+		line, _, err := reader.ReadLine()
 		if err != nil && err == io.EOF {
 			break
 		}
-		output = append(output, input)
+		lines = append(lines, string(line))
 	}
 
-	for j := 0; j < len(output); j++ {
-		fmt.Printf("%c", output[j])
+	for _, line := range lines {
+		fmt.Println(line)
 	}
+	fmt.Println()
 }
