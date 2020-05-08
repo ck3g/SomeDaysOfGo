@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -32,13 +33,18 @@ func main() {
 		lines = append(lines, string(line))
 	}
 
+	var figure string
+
+	flag.StringVar(&figure, "f", "cow", "the figure name. Valid values are `cow` and `stegosaurus`")
+	flag.Parse()
+
 	lines = tabsToSpaces(lines)
 	maxwidth := calculateMaxWidth(lines)
 	messages := normalizeStringsLength(lines, maxwidth)
 	balloon := buildBalloon(messages, maxwidth)
 
 	fmt.Println(balloon)
-	printFigure("stegosaurus")
+	printFigure(figure)
 	fmt.Println()
 }
 
