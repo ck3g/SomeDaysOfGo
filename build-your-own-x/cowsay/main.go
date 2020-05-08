@@ -32,20 +32,13 @@ func main() {
 		lines = append(lines, string(line))
 	}
 
-	var cow = `         \  ^__^
-	  \ (oo)\_______
-	    (__)\       )\/\
-	        ||----w |
-	        ||     ||
-	      `
-
 	lines = tabsToSpaces(lines)
 	maxwidth := calculateMaxWidth(lines)
 	messages := normalizeStringsLength(lines, maxwidth)
 	balloon := buildBalloon(messages, maxwidth)
 
 	fmt.Println(balloon)
-	fmt.Println(cow)
+	printFigure("stegosaurus")
 	fmt.Println()
 }
 
@@ -119,4 +112,41 @@ func buildBalloon(lines []string, maxwidth int) string {
 
 	ret = append(ret, bottom)
 	return strings.Join(ret, "\n")
+}
+
+// printFigure given a figure name prints it.
+// Currently accepts `cow` and `stegosaurus`.
+func printFigure(name string) {
+	var cow = `       \  ^__^
+	\ (oo)\_______
+	  (__)\       )\/\
+	      ||----w |
+	      ||     ||
+	    `
+
+	var stegosaurus = `           \                      .       .
+	    \                    / ` + "`" + `.   .' "
+	     \           .---.  <    > <    >  .---.
+	      \          |    \  \ - ~ ~ - /  /    |
+	    _____           ..-~             ~-..-~
+	   |     |   \~~~\\.'                    ` + "`" + `./~~~/
+	  ---------   \__/                         \__/
+	 .'  O    \     /               /       \  "
+	(_____,    ` + "`" + `._.'               |         }  \/~~~/
+	 ` + "`" + `----.          /       }     |        /    \__/
+	       ` + "`" + `-.      |       /      |       /      ` + "`" + `. ,~~|
+		   ~-.__|      /_ - ~ ^|      /- _      ` + "`" + `..-'
+			|     /        |     /     ~-.     ` + "`" + `-. _  _  _
+			|_____|        |_____|         ~ - . _ _ _ _ _>
+  
+	  `
+
+	switch name {
+	case "cow":
+		fmt.Println(cow)
+	case "stegosaurus":
+		fmt.Println(stegosaurus)
+	default:
+		fmt.Println("Unknown figure")
+	}
 }
