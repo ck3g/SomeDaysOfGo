@@ -30,8 +30,17 @@ func main() {
 		lines = append(lines, string(line))
 	}
 
+	var cow = `         \  ^__^
+	  \ (oo)\_______
+	    (__)\       )\/\
+	        ||----w |
+	        ||     ||
+	      `
+
 	for _, line := range lines {
 		fmt.Println(line)
 	}
+
+	fmt.Println(cow)
 	fmt.Println()
 }
