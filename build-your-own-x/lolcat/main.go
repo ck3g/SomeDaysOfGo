@@ -15,12 +15,7 @@ func main() {
 	}
 
 	output := strings.Join(phrases[:], "; ")
-
-	for j := 0; j < len(output); j++ {
-		r, g, b := rgb(j)
-		fmt.Printf("\033[38;2;%d;%d;%dm%c\033[0m", r, g, b, output[j])
-	}
-	fmt.Println()
+	print(output)
 }
 
 func rgb(i int) (int, int, int) {
@@ -30,4 +25,12 @@ func rgb(i int) (int, int, int) {
 	b := int(math.Sin(f*float64(i)+4*math.Pi/3)*127 + 128)
 
 	return r, g, b
+}
+
+func print(output string) {
+	for j := 0; j < len(output); j++ {
+		r, g, b := rgb(j)
+		fmt.Printf("\033[38;2;%d;%d;%dm%c\033[0m", r, g, b, output[j])
+	}
+	fmt.Println()
 }
