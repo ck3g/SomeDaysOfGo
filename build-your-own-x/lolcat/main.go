@@ -1,20 +1,31 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"math"
-	"strings"
-
-	"syreclabs.com/go/faker"
+	"os"
 )
 
 func main() {
-	var phrases []string
-	for i := 1; i < 3; i++ {
-		phrases = append(phrases, faker.Hacker().Phrases()...)
+	info, _ := os.Stdin.Stat()
+	var output []rune
+
+	if info.Mode()&os.ModeCharDevice != 0 {
+		fmt.Println("The command is intended to work with pipes.")
+		fmt.Println("Usage: fortune | lolcat")
 	}
 
-	output := strings.Join(phrases[:], "; ")
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		input, _, err := reader.ReadRune()
+		if err != nil && err == io.EOF {
+			break
+		}
+		output = append(output, input)
+	}
+
 	print(output)
 }
 
@@ -27,7 +38,7 @@ func rgb(i int) (int, int, int) {
 	return r, g, b
 }
 
-func print(output string) {
+func print(output []rune) {
 	for j := 0; j < len(output); j++ {
 		r, g, b := rgb(j)
 		fmt.Printf("\033[38;2;%d;%d;%dm%c\033[0m", r, g, b, output[j])
