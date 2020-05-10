@@ -2,10 +2,12 @@ package main
 
 import (
 	"bufio"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var files []string
@@ -28,7 +30,10 @@ func main() {
 		panic(err)
 	}
 
-	println(len(files))
+	rand.Seed(time.Now().UnixNano())
+	i := randomInt(1, len(files))
+	randomFile := files[i]
+	print(randomFile)
 }
 
 func visit(path string, f os.FileInfo, err error) error {
@@ -46,4 +51,9 @@ func visit(path string, f os.FileInfo, err error) error {
 
 	files = append(files, path)
 	return nil
+}
+
+// Returns an int >= min, < max
+func randomInt(min, max int) int {
+	return min + rand.Intn(max-min)
 }
