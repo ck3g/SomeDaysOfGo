@@ -1,15 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os/exec"
 )
 
 func main() {
-	out, err := exec.Command("fortune", "-f").CombinedOutput()
+	fortuneCommand := exec.Command("fortune", "-f")
+	pipe, err := fortuneCommand.StderrPipe()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(string(out))
+	fortuneCommand.Start()
+	outputStream := bufio.NewScanner(pipe)
+	outputStream.Scan()
+	fmt.Println(outputStream.Text())
 }
