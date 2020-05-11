@@ -59,7 +59,23 @@ func getDotFilePath() string {
 	return dotFile
 }
 
-func addNewSliceElementsToFile(filePath string, repositories []string) {
+// addNewSliceElementsToFile given a slice of strings representing paths, strores them
+// to the filesystem
+func addNewSliceElementsToFile(filePath string, newRepos []string) {
+	existingRepos := parseFileLinesToSlice(filePath)
+	repos := joinSlices(newRepos, existingRepos)
+	dumpStringsSliceToFile(repos, filePath)
+}
+
+func parseFileLinesToSlice(filePath string) []string {
+	return make([]string, 0)
+}
+
+func joinSlices(new []string, existing []string) []string {
+	return make([]string, 0)
+}
+
+func dumpStringsSliceToFile(repos []string, filePath string) {
 
 }
 
