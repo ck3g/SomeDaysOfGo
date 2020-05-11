@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 	"strings"
 )
 
@@ -45,8 +46,17 @@ func recursiveScanFolder(folder string) []string {
 	return scanGitFolders(make([]string, 0), folder)
 }
 
+// getDotFilePath returns the dot file for the repos list.
+// Creates it and the enclosing folder if it does not exists.
 func getDotFilePath() string {
-	return ""
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dotFile := usr.HomeDir + "/.gitlocalstats"
+
+	return dotFile
 }
 
 func addNewSliceElementsToFile(filePath string, repositories []string) {
