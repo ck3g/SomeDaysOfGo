@@ -33,8 +33,12 @@ func main() {
 func scan(folder string) {
 	fmt.Printf("Found folders:\n\n")
 	repositories := recursiveScanFolder(folder)
-	filePath := getDotFilePath()
-	addNewSliceElementsToFile(filePath, repositories)
+
+	// There is an error working with file, so ignore that for now
+	// filePath := getDotFilePath()
+	// addNewSliceElementsToFile(filePath, repositories)
+
+	fmt.Println(repositories)
 	fmt.Printf("\n\nSuccessfully added\n\n")
 }
 
