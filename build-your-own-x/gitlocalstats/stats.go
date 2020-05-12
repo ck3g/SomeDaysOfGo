@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-git/go-git"
@@ -10,6 +9,8 @@ import (
 
 const daysInLastSixMonths = 183
 const outOfRange = 99999
+
+type column []int
 
 // stats calcualtes and prints the stats
 func stats(email string) {
@@ -126,5 +127,34 @@ func calcOffset() int {
 }
 
 func printCommitsStats(commits map[int]int) {
-	fmt.Println(commits)
+	keys := sortMapIntoSlice(commits)
+	cols := buildCols(keys, commits)
+	printCells(cols)
+}
+
+// sortMapIntoSlice returns a slice of indexes of a map, ordered
+func sortMapIntoSlice(m map[int]int) []int {
+	// order map
+	// To store the keys in slice in sorted order
+	var keys []int
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sortInts(keys)
+
+	return keys
+}
+
+func buildCols(keys []int, commits map[int]int) map[int]column {
+	cols := make(map[int]column)
+
+	return cols
+}
+
+func sortInts(keys []int) {
+
+}
+
+func printCells(cols map[int]column) {
+
 }
