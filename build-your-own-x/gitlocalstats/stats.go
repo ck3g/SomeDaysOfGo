@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // stats calcualtes and prints the stats
 func stats(email string) {
 	commits := processRepositories(email)
@@ -7,6 +9,7 @@ func stats(email string) {
 }
 
 func processRepositories(email string) map[int]int {
+	fmt.Println(repositories)
 	return make(map[int]int)
 }
 

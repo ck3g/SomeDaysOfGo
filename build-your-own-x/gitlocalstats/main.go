@@ -4,6 +4,8 @@ import (
 	"flag"
 )
 
+var repositories []string
+
 func main() {
 	var folder string
 	var email string
@@ -14,7 +16,7 @@ func main() {
 
 	if folder != "" {
 		scan(folder)
-		return
+		// return // Not storing to the file, so process every time
 	}
 
 	stats(email)

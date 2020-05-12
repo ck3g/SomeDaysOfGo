@@ -15,13 +15,12 @@ import (
 // searching for Git repositories
 func scan(folder string) {
 	fmt.Printf("Found folders:\n\n")
-	repositories := recursiveScanFolder(folder)
+	repositories = recursiveScanFolder(folder)
 
 	// There is an error working with file, so ignore that for now
 	// filePath := getDotFilePath()
 	// addNewSliceElementsToFile(filePath, repositories)
 
-	fmt.Println(repositories)
 	fmt.Printf("\n\nSuccessfully added\n\n")
 }
 
