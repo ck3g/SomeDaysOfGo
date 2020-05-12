@@ -109,8 +109,27 @@ func openFile(filePath string) *os.File {
 	return f
 }
 
+// joinSlices adds the element of the `new` slice
+// into the `existing` slice, only if not already there
 func joinSlices(new []string, existing []string) []string {
-	return make([]string, 0)
+	for _, i := range new {
+		if !sliceContains(existing, i) {
+			existing = append(existing, i)
+		}
+	}
+
+	return existing
+}
+
+// sliceContains returns true if `slice` contains `value`
+func sliceContains(slice []string, value string) bool {
+	for _, v := range slice {
+		if v == value {
+			return true
+		}
+	}
+
+	return false
 }
 
 func dumpStringsSliceToFile(repos []string, filePath string) {
