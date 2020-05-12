@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/user"
@@ -132,8 +133,10 @@ func sliceContains(slice []string, value string) bool {
 	return false
 }
 
+// dumpStringsSliceToFile writes content to the file in path `filePath` (overwriting existing content)
 func dumpStringsSliceToFile(repos []string, filePath string) {
-
+	content := strings.Join(repos, "\n")
+	ioutil.WriteFile(filePath, []byte(content), 0755)
 }
 
 // scanGitFolders returns a list of subfolders of `folder` ending with `.git`.
