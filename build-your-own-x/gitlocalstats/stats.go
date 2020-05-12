@@ -1,6 +1,15 @@
 package main
 
-// stats generates a nice graph of your Git contributions
+// stats calcualtes and prints the stats
 func stats(email string) {
-	print("stats")
+	commits := processRepositories(email)
+	printCommitsStats(commits)
+}
+
+func processRepositories(email string) map[int]int {
+	return make(map[int]int)
+}
+
+func printCommitsStats(commits map[int]int) {
+
 }
