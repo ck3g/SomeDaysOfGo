@@ -226,8 +226,20 @@ func printMonths() {
 
 }
 
-func printDayCol(col int) {
+// printDayCol given the day number (0 is Sunday) prints the day name,
+// alternating the rows (prints just 2, 4, 6)
+func printDayCol(day int) {
+	out := "     "
+	switch day {
+	case 1:
+		out = " Mon "
+	case 3:
+		out = " Wed "
+	case 5:
+		out = " Fri "
+	}
 
+	fmt.Printf(out)
 }
 
 func printCell(col int, t bool) {
