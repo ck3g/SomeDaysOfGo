@@ -12,9 +12,10 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
-// Block is a block of data written to the blockchain
+// Block represents each 'item' in the blockchain
 type Block struct {
 	Index     int    // the position of the data record in the blockchain
 	Timestamp string // automatically determined and is the time the data is written
@@ -23,16 +24,27 @@ type Block struct {
 	PrevHash  string // SHA256 identifier of the previous record in the chain
 }
 
-// Message TBD
+// Message takes incoming JSON payload for writing heart rate
 type Message struct {
 	BPM int
 }
 
-// Blockchain represents the set of blocks
+// Blockchain is a series of validated Blocks
 var Blockchain []Block
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	go func() {
+		t := time.Now()
+		genesisBlock := Block{0, t.String(), 0, "", ""}
+		spew.Dump(genesisBlock)
+		Blockchain = append(Blockchain, genesisBlock)
+	}()
+	log.Fatal(run())
 }
 
 func calculateHash(block Block) string {
@@ -82,10 +94,10 @@ func replaceChain(newBlocks []Block) {
 
 func run() error {
 	mux := makeMuxRouter()
-	httpAddr := os.Getenv("ADDR")
-	log.Println("Listening on ", os.Getenv("ADDR"))
+	httpPort := os.Getenv("PORT")
+	log.Println("HTTP Server listening on port :", os.Getenv("PORT"))
 	s := &http.Server{
-		Addr:           ":" + httpAddr,
+		Addr:           ":" + httpPort,
 		Handler:        mux,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
