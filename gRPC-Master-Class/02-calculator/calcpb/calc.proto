@@ -20,6 +20,10 @@ message ComputeAverageRequest { float number = 1; }
 
 message ComputeAverageResponse { float average = 1; }
 
+message FindMaxRequest { int64 number = 1; }
+
+message FindMaxResponse { int64 max_number = 1; }
+
 service CalculatorService {
   rpc Sum(SumRequest) returns (SumResponse) {};
 
@@ -28,4 +32,6 @@ service CalculatorService {
 
   rpc ComputeAverage(stream ComputeAverageRequest)
       returns (ComputeAverageResponse) {};
+
+  rpc FindMax(stream FindMaxRequest) returns (stream FindMaxResponse) {};
 }
