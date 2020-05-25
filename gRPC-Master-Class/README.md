@@ -17,3 +17,15 @@ Hands-on exercises from [gRPC [Golang] Master Class: Build Modern API & Microser
     ```
     go get -u github.com/golang/protobuf/protoc-gen-go
     ```
+
+
+## Resources
+
+* https://grpc.io
+* https://developers.google.com/protocol-buffers
+* https://imagekit.io/demo/http2-vs-http1
+
+### Error handling
+
+* https://grpc.io/docs/guides/error/
+* http://avi.im/grpc-errors/
