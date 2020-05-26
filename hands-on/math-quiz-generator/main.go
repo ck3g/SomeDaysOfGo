@@ -11,7 +11,7 @@ func main() {
 
 	count := 60
 	for i := 0; i < count; i++ {
-		q := mediumAdditionQuestion()
+		q := mediumAdditionQuestion(20)
 		fmt.Println(q)
 	}
 }
@@ -22,19 +22,10 @@ func easyAdditionQuestion() string {
 	return fmt.Sprintf("%d + %d = __", first, second)
 }
 
-func mediumAdditionQuestion() string {
-	first := randomInRange(7, 20)
-	min := 2
-
-	if first < 10 {
-		min = 8
-	}
-
-	second := randomInRange(min, 10)
-
-	if rand.Intn(2) == 1 {
-		first, second = second, first
-	}
+func mediumAdditionQuestion(maxSum int) string {
+	sum := randomInRange(10, maxSum)
+	first := randomInRange(2, sum-1)
+	second := sum - first
 
 	return fmt.Sprintf("%d + %d = __", first, second)
 }
