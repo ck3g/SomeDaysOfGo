@@ -12,6 +12,7 @@ import (
 	greetpb "github.com/ck3g/SomeDaysOfGo/gRPC-Master-Class/01-greet/greetpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 )
 
@@ -116,7 +117,20 @@ func main() {
 		log.Fatalf("Failied to listen: %v", err)
 	}
 
-	s := grpc.NewServer()
+	// Without SSL
+	// s := grpc.NewServer()
+
+	// With SSL
+	certFile := "../ssl/server.crt"
+	keyFile := "../ssl/server.pem"
+	creds, sslErr := credentials.NewServerTLSFromFile(certFile, keyFile)
+	if sslErr != nil {
+		log.Fatalf("Failed loading certificates: %v\n", sslErr)
+		return
+	}
+	opts := grpc.Creds(creds)
+	s := grpc.NewServer(opts)
+
 	greetpb.RegisterGreetServiceServer(s, &server{})
 
 	if err := s.Serve(lis); err != nil {
