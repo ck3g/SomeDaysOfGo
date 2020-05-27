@@ -33,3 +33,9 @@ Hands-on exercises from [gRPC [Golang] Master Class: Build Modern API & Microser
 ### Deadlines
 
 * https://grpc.io/blog/deadlines/
+
+
+### SSL
+
+* https://grpc.io/docs/guides/auth/
+* https://github.com/grpc/grpc-go/blob/master/Documentation/grpc-auth-support.md
