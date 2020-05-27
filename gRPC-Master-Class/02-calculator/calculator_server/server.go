@@ -11,6 +11,7 @@ import (
 	calcpb "github.com/ck3g/SomeDaysOfGo/gRPC-Master-Class/02-calculator/calcpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 )
 
@@ -133,6 +134,9 @@ func main() {
 
 	s := grpc.NewServer()
 	calcpb.RegisterCalculatorServiceServer(s, &server{})
+
+	// Register reflection service on gRPC server.
+	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
