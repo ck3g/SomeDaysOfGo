@@ -7,3 +7,6 @@
 WebDev/uploads/*
 WebDev/001-templates/index.html
 WebDev/002-text-template-package/index.html
+
+gRPC-Master-Class/ssl/*
+!gRPC-Master-Class/ssl/instructions.sh
