@@ -10,12 +10,20 @@ import (
 	"time"
 
 	"github.com/ck3g/SomeDaysOfGo/gRPC-Master-Class/blog/blogpb"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 )
 
 type server struct{}
+
+type blogItem struct {
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	AuthorID string             `bson:"author_id"`
+	Content  string             `bson:"content"`
+	Title    string             `bson:"title"`
+}
 
 var collection *mongo.Collection
 
@@ -66,5 +74,7 @@ func main() {
 	s.Stop()
 	fmt.Println("Closing the listener...")
 	lis.Close()
+	fmt.Println("Clossing MongoDB connection...")
+	client.Disconnect(context.TODO())
 	fmt.Println("End of program")
 }
