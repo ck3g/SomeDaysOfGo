@@ -30,6 +30,8 @@ type blogItem struct {
 var collection *mongo.Collection
 
 func (*server) CreateBlog(ctx context.Context, req *blogpb.CreateBlogRequest) (*blogpb.CreateBlogResponse, error) {
+	fmt.Println("Create BlogRequest...")
+
 	blog := req.GetBlog()
 
 	data := blogItem{
