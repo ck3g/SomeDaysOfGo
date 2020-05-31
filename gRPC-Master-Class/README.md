@@ -24,6 +24,8 @@ Hands-on exercises from [gRPC [Golang] Master Class: Build Modern API & Microser
 * https://grpc.io
 * https://developers.google.com/protocol-buffers
 * https://imagekit.io/demo/http2-vs-http1
+* https://github.com/gogo/protobuf
+* https://jbrandhorst.com/post/gogoproto/
 
 ### Error handling
 
