@@ -32,6 +32,8 @@ func main() {
 		Content:  "Updated blog's content",
 	}
 	updateBlog(c, blog)
+
+	deleteBlog(c, blogID)
 }
 
 func createBlog(c blogpb.BlogServiceClient) string {
@@ -76,4 +78,15 @@ func updateBlog(c blogpb.BlogServiceClient, blog *blogpb.Blog) *blogpb.Blog {
 	log.Printf("Blog has been updated: %v\n", res)
 
 	return res.GetBlog()
+}
+
+func deleteBlog(c blogpb.BlogServiceClient, blogID string) {
+	fmt.Println("Deleting a blog...")
+
+	_, err := c.DeleteBlog(context.Background(), &blogpb.DeleteBlogRequest{BlogId: blogID})
+	if err != nil {
+		log.Fatalf("Error while calling DeleteBlog RPC: %v\n", err)
+	}
+
+	log.Println("Blog has been deleted")
 }
