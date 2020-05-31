@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 
 	"github.com/ck3g/SomeDaysOfGo/gRPC-Master-Class/blog/blogpb"
@@ -34,6 +35,8 @@ func main() {
 	updateBlog(c, blog)
 
 	deleteBlog(c, blogID)
+
+	listBlogs(c)
 }
 
 func createBlog(c blogpb.BlogServiceClient) string {
@@ -89,4 +92,24 @@ func deleteBlog(c blogpb.BlogServiceClient, blogID string) {
 	}
 
 	log.Println("Blog has been deleted")
+}
+
+func listBlogs(c blogpb.BlogServiceClient) {
+	fmt.Println("Listing the blogs...")
+
+	stream, err := c.ListBlog(context.Background(), &blogpb.ListBlogRequest{})
+	if err != nil {
+		log.Fatalf("Error while calling ListBlog RPC: %v\n", err)
+	}
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Something went wrong: %v\n", err)
+		}
+
+		fmt.Println(res.GetBlog())
+	}
 }
