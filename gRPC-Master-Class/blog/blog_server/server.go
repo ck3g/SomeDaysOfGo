@@ -78,7 +78,7 @@ func main() {
 		return
 	}
 
-	collection = client.Database("").Collection("blog")
+	collection = client.Database("gRPC-Blog").Collection("blog")
 
 	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
