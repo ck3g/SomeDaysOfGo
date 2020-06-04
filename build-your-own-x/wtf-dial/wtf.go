@@ -34,3 +34,14 @@ type DialService interface {
 	CreateDial(dial *Dial) error
 	SetLevel(id DialID, level float64) error
 }
+
+// Client creates a connection to the services.
+type Client interface {
+	Connect() Session
+}
+
+// Session represents authenticable connection to the services.
+type Session interface {
+	SetAuthToken(token string)
+	DialService() DialService
+}
