@@ -23,8 +23,8 @@ type Dial struct {
 	ModTime time.Time `json:"modTime"`
 }
 
-// UserService represents a service for managing users.
-type UserService interface {
+// Authenticator represents a service for authenticating users.
+type Authenticator interface {
 	Authenticate(token string) (*User, error)
 }
 
