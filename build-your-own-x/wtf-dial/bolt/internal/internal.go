@@ -8,7 +8,6 @@ import (
 )
 
 //go:generate protoc --experimental_allow_proto3_optional --gogo_out=. internal.proto
-// protoc ./bolt/internal/internal.proto --experimental_allow_proto3_optional --gogo_out=.
 
 // MarshalDial encodes a dial to binary format.
 func MarshalDial(d *wtf.Dial) ([]byte, error) {
@@ -24,7 +23,7 @@ func MarshalDial(d *wtf.Dial) ([]byte, error) {
 // UnmarshalDial decodes a dial from a binary data.
 func UnmarshalDial(data []byte, d *wtf.Dial) error {
 	var pb Dial
-	if err := proto.Unmarshal(data, *pb); err != nil {
+	if err := proto.Unmarshal(data, &pb); err != nil {
 		return err
 	}
 
