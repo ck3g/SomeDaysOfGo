@@ -43,7 +43,7 @@ func NewClient() *Client {
 }
 
 // MustOpenClient returns an new, open isntance of Client
-func MostOpenClient() *Client {
+func MustOpenClient() *Client {
 	c := NewClient()
 	if err := c.Open(); err != nil {
 		panic(err)

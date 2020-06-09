@@ -58,3 +58,11 @@ func (c *Client) Close() error {
 	}
 	return nil
 }
+
+// Connect returns a new session to the BoltDB database.
+func (c *Client) Connect() *Session {
+	s := newSession(c.db)
+	s.authenticator = c.Authenticator
+	s.now = c.Now()
+	return s
+}
