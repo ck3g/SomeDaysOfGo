@@ -13,8 +13,8 @@ import (
 // Ensure dial cna be marshaled and unmarshaled.
 func TestMarchalDial(t *testing.T) {
 	v := wtf.Dial{
-		ID:      1,
-		UserID:  2,
+		ID:      "ID",
+		Token:   "TOKEN",
 		Name:    "MYDIAL",
 		Level:   10.2,
 		ModTime: time.Now().UTC(),

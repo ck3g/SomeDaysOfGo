@@ -21,11 +21,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Dial struct {
-	ID                   *int64   `protobuf:"varint,1,opt,name=ID" json:"ID,omitempty"`
-	UserID               *int64   `protobuf:"varint,2,opt,name=UserID" json:"UserID,omitempty"`
-	Name                 *string  `protobuf:"bytes,3,opt,name=Name" json:"Name,omitempty"`
-	Level                *float64 `protobuf:"fixed64,4,opt,name=Level" json:"Level,omitempty"`
-	ModTime              *int64   `protobuf:"varint,5,opt,name=ModTime" json:"ModTime,omitempty"`
+	ID                   string   `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	Token                string   `protobuf:"bytes,2,opt,name=Token,proto3" json:"Token,omitempty"`
+	Name                 string   `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+	Level                float64  `protobuf:"fixed64,4,opt,name=Level,proto3" json:"Level,omitempty"`
+	ModTime              int64    `protobuf:"varint,5,opt,name=ModTime,proto3" json:"ModTime,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -55,104 +55,56 @@ func (m *Dial) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Dial proto.InternalMessageInfo
 
-func (m *Dial) GetID() int64 {
-	if m != nil && m.ID != nil {
-		return *m.ID
+func (m *Dial) GetID() string {
+	if m != nil {
+		return m.ID
 	}
-	return 0
+	return ""
 }
 
-func (m *Dial) GetUserID() int64 {
-	if m != nil && m.UserID != nil {
-		return *m.UserID
+func (m *Dial) GetToken() string {
+	if m != nil {
+		return m.Token
 	}
-	return 0
+	return ""
 }
 
 func (m *Dial) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+	if m != nil {
+		return m.Name
 	}
 	return ""
 }
 
 func (m *Dial) GetLevel() float64 {
-	if m != nil && m.Level != nil {
-		return *m.Level
+	if m != nil {
+		return m.Level
 	}
 	return 0
 }
 
 func (m *Dial) GetModTime() int64 {
-	if m != nil && m.ModTime != nil {
-		return *m.ModTime
+	if m != nil {
+		return m.ModTime
 	}
 	return 0
-}
-
-type User struct {
-	ID                   *int64   `protobuf:"varint,1,opt,name=ID" json:"ID,omitempty"`
-	Username             *string  `protobuf:"bytes,2,opt,name=Username" json:"Username,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *User) Reset()         { *m = User{} }
-func (m *User) String() string { return proto.CompactTextString(m) }
-func (*User) ProtoMessage()    {}
-func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_41f4a519b878ee3b, []int{1}
-}
-func (m *User) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_User.Unmarshal(m, b)
-}
-func (m *User) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_User.Marshal(b, m, deterministic)
-}
-func (m *User) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_User.Merge(m, src)
-}
-func (m *User) XXX_Size() int {
-	return xxx_messageInfo_User.Size(m)
-}
-func (m *User) XXX_DiscardUnknown() {
-	xxx_messageInfo_User.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_User proto.InternalMessageInfo
-
-func (m *User) GetID() int64 {
-	if m != nil && m.ID != nil {
-		return *m.ID
-	}
-	return 0
-}
-
-func (m *User) GetUsername() string {
-	if m != nil && m.Username != nil {
-		return *m.Username
-	}
-	return ""
 }
 
 func init() {
 	proto.RegisterType((*Dial)(nil), "internal.Dial")
-	proto.RegisterType((*User)(nil), "internal.User")
 }
 
 func init() { proto.RegisterFile("internal.proto", fileDescriptor_41f4a519b878ee3b) }
 
 var fileDescriptor_41f4a519b878ee3b = []byte{
-	// 156 bytes of a gzipped FileDescriptorProto
+	// 137 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcb, 0xcc, 0x2b, 0x49,
-	0x2d, 0xca, 0x4b, 0xcc, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0x95, 0x8a,
+	0x2d, 0xca, 0x4b, 0xcc, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0x95, 0x0a,
 	0xb8, 0x58, 0x5c, 0x32, 0x13, 0x73, 0x84, 0xf8, 0xb8, 0x98, 0x3c, 0x5d, 0x24, 0x18, 0x15, 0x18,
-	0x35, 0x98, 0x83, 0x98, 0x3c, 0x5d, 0x84, 0xc4, 0xb8, 0xd8, 0x42, 0x8b, 0x53, 0x8b, 0x3c, 0x5d,
-	0x24, 0x98, 0xc0, 0x62, 0x50, 0x9e, 0x90, 0x10, 0x17, 0x8b, 0x5f, 0x62, 0x6e, 0xaa, 0x04, 0xb3,
-	0x02, 0xa3, 0x06, 0x67, 0x10, 0x98, 0x2d, 0x24, 0xc2, 0xc5, 0xea, 0x93, 0x5a, 0x96, 0x9a, 0x23,
-	0xc1, 0xa2, 0xc0, 0xa8, 0xc1, 0x18, 0x04, 0xe1, 0x08, 0x49, 0x70, 0xb1, 0xfb, 0xe6, 0xa7, 0x84,
-	0x64, 0xe6, 0xa6, 0x4a, 0xb0, 0x82, 0x8d, 0x80, 0x71, 0x95, 0x8c, 0xb8, 0x58, 0x40, 0xa6, 0x61,
-	0xd8, 0x29, 0xc5, 0xc5, 0x01, 0x12, 0xcf, 0x03, 0x99, 0xcf, 0x04, 0x36, 0x1f, 0xce, 0x07, 0x04,
-	0x00, 0x00, 0xff, 0xff, 0xba, 0xfd, 0xa7, 0x38, 0xc2, 0x00, 0x00, 0x00,
+	0x35, 0x38, 0x83, 0x98, 0x3c, 0x5d, 0x84, 0x44, 0xb8, 0x58, 0x43, 0xf2, 0xb3, 0x53, 0xf3, 0x24,
+	0x98, 0xc0, 0x42, 0x10, 0x8e, 0x90, 0x10, 0x17, 0x8b, 0x5f, 0x62, 0x6e, 0xaa, 0x04, 0x33, 0x58,
+	0x10, 0xcc, 0x06, 0xa9, 0xf4, 0x49, 0x2d, 0x4b, 0xcd, 0x91, 0x60, 0x51, 0x60, 0xd4, 0x60, 0x0c,
+	0x82, 0x70, 0x84, 0x24, 0xb8, 0xd8, 0x7d, 0xf3, 0x53, 0x42, 0x32, 0x73, 0x53, 0x25, 0x58, 0x15,
+	0x18, 0x35, 0x98, 0x83, 0x60, 0xdc, 0x24, 0x36, 0xb0, 0x13, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x8a, 0x59, 0x2a, 0x88, 0x94, 0x00, 0x00, 0x00,
 }
