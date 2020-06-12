@@ -34,8 +34,10 @@ func (s *DialService) Dial(id wtf.DialID) (*wtf.Dial, error) {
 
 // CreateDial creates a new dial.
 func (s *DialService) CreateDial(d *wtf.Dial) error {
-	// Reqiure id.
-	if d.ID == "" {
+	// Reqiure object and id.
+	if d == nil {
+		return wtf.ErrDialRequired
+	} else if d.ID == "" {
 		return wtf.ErrDialIDRequired
 	}
 
