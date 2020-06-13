@@ -1,6 +1,6 @@
 package http_test
 
-import "net/http"
+import "github.com/ck3g/SomeDaysOfGo/build-your-own-x/wtf-dial/http"
 
 // Handler represents a test wrapper for http.Handler.
 type Handler struct {
@@ -12,7 +12,7 @@ type Handler struct {
 // NewHandler returns a new instance of Handler.
 func NewHandler() *Handler {
 	h := &Handler{
-		Hanlder:     &http.Handler{},
+		Handler:     &http.Handler{},
 		DialHandler: NewDialHandler(),
 	}
 	h.Handler.DialHandler = h.DialHandler.DialHandler
