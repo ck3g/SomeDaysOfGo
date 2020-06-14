@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBubbleSort(t *testing.T) {
@@ -32,6 +34,9 @@ func TestBubbleSort(t *testing.T) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("elements are not sorted. got %v want %v", got, want)
 	}
+
+	// Even better using stretchr/testify
+	assert.EqualValues(t, want, got)
 }
 
 func TestBubbleSort_WithTimeout(t *testing.T) {
@@ -55,10 +60,7 @@ func TestBubbleSort_WithTimeout(t *testing.T) {
 	}
 
 	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	got := elements
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("elements are not sorted. got %v want %v", got, want)
-	}
+	assert.EqualValues(t, want, elements)
 }
 
 func TestSort(t *testing.T) {
@@ -67,10 +69,7 @@ func TestSort(t *testing.T) {
 	Sort(elements)
 
 	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	got := elements
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("elements are not sorted. got %v want %v", got, want)
-	}
+	assert.EqualValues(t, want, elements)
 }
 
 func BenchmarkBubbleSort(b *testing.B) {

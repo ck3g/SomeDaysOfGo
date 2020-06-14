@@ -1,8 +1,9 @@
 package services
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // That is an integration test. Even though technically there is no difference with unit test
@@ -12,8 +13,5 @@ func TestSort(t *testing.T) {
 	Sort(elements)
 
 	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	got := elements
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("elements are not sorted. got %v want %v", got, want)
-	}
+	assert.EqualValues(t, want, elements)
 }
