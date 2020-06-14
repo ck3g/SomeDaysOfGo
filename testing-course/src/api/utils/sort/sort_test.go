@@ -3,6 +3,7 @@ package sort
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestBubbleSort(t *testing.T) {
@@ -26,6 +27,33 @@ func TestBubbleSort(t *testing.T) {
 	}
 
 	// Better version could be checking against whole slice
+	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	got := elements
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("elements are not sorted. got %v want %v", got, want)
+	}
+}
+
+func TestBubbleSort_WithTimeout(t *testing.T) {
+	elements := []int{9, 7, 5, 3, 1, 2, 4, 6, 8, 0}
+
+	timeoutChan := make(chan bool, 1)
+
+	go func() {
+		BubbleSort(elements)
+		timeoutChan <- false
+	}()
+
+	go func() {
+		time.Sleep(500 * time.Millisecond)
+		timeoutChan <- true
+	}()
+
+	if <-timeoutChan {
+		t.Errorf("Bubble sort took more than 500ms")
+		return
+	}
+
 	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	got := elements
 	if !reflect.DeepEqual(got, want) {
