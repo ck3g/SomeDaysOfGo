@@ -1,5 +1,7 @@
 package sort
 
+import "sort"
+
 // BubbleSort sorts a slice of integers using Bubble Sort algorithms.
 func BubbleSort(elements []int) {
 	keepWorking := true
@@ -14,4 +16,9 @@ func BubbleSort(elements []int) {
 			}
 		}
 	}
+}
+
+// Sort uses builtin function to sort
+func Sort(elements []int) {
+	sort.Ints(elements)
 }
