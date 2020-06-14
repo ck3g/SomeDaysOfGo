@@ -2,17 +2,24 @@ package locations_provider
 
 import (
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/mercadolibre/golang-restclient/rest"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetCountry_RESTClientError(t *testing.T) {
-	// Unfortunately rest.StartMockupServer() doesn't work with fresh go lang versions
+func TestMain(m *testing.M) {
+	// Unfortunately rest.StartMockupServer() doesn't work with newer Go lang versions
 	// https://github.com/mercadolibre/golang-restclient/issues/5
 	// Wait for https://github.com/mercadolibre/golang-restclient/pull/2/files to be merged, or update the files
 	rest.StartMockupServer()
+
+	os.Exit(m.Run()) // Required, otherwise it won't run the tests
+}
+
+func TestGetCountry_RESTClientError(t *testing.T) {
+	rest.FlushMockups()
 	rest.AddMockups(&rest.Mock{
 		URL:          "https://api.mercadolibre.com/countries/DE",
 		HTTPMethod:   http.MethodGet,
@@ -28,7 +35,7 @@ func TestGetCountry_RESTClientError(t *testing.T) {
 }
 
 func TestGetCountry_CountryNotFound(t *testing.T) {
-	rest.StartMockupServer()
+	rest.FlushMockups()
 	rest.AddMockups(&rest.Mock{
 		URL:          "https://api.mercadolibre.com/countries/DE",
 		HTTPMethod:   http.MethodGet,
@@ -45,7 +52,7 @@ func TestGetCountry_CountryNotFound(t *testing.T) {
 }
 
 func TestGetCountry_InvalidErrorInterface(t *testing.T) {
-	rest.StartMockupServer()
+	rest.FlushMockups()
 	rest.AddMockups(&rest.Mock{
 		URL:          "https://api.mercadolibre.com/countries/DE",
 		HTTPMethod:   http.MethodGet,
@@ -62,7 +69,7 @@ func TestGetCountry_InvalidErrorInterface(t *testing.T) {
 }
 
 func TestGetCountry_InvalidJSONResponse(t *testing.T) {
-	rest.StartMockupServer()
+	rest.FlushMockups()
 	rest.AddMockups(&rest.Mock{
 		URL:          "https://api.mercadolibre.com/countries/DE",
 		HTTPMethod:   http.MethodGet,
@@ -108,7 +115,8 @@ func TestGetCountry_NoError(t *testing.T) {
 		]
 		}
 	`
-	rest.StartMockupServer()
+
+	rest.FlushMockups()
 	rest.AddMockups(&rest.Mock{
 		URL:          "https://api.mercadolibre.com/countries/DE",
 		HTTPMethod:   http.MethodGet,
