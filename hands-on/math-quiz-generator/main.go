@@ -11,7 +11,7 @@ func main() {
 
 	count := 60
 	for i := 0; i < count; i++ {
-		q := hardAdditionQuestion(100)
+		q := hardSubtractionQuestion()
 		fmt.Println(q)
 	}
 }
@@ -49,6 +49,14 @@ func easySubtractionQuestion() string {
 func mediumSubtractionQuestion() string {
 	diff := randomInRange(1, 9)
 	minuend := randomInRange(10, 20)
+	subtrahend := minuend - diff
+
+	return fmt.Sprintf("%d - %d = __", minuend, subtrahend)
+}
+
+func hardSubtractionQuestion() string {
+	diff := randomInRange(1, 50)
+	minuend := randomInRange(diff, 99)
 	subtrahend := minuend - diff
 
 	return fmt.Sprintf("%d - %d = __", minuend, subtrahend)
