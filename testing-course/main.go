@@ -1,17 +1,7 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/ck3g/SomeDaysOfGo/testing-course/src/api/providers/locations_provider"
-)
+import "github.com/ck3g/SomeDaysOfGo/testing-course/src/api/app"
 
 func main() {
-	c, err := locations_provider.GetCountry("DEU")
-	if err != nil {
-		fmt.Println(err.Message)
-		return
-	}
-
-	fmt.Printf("Country: %+v", c)
+	app.StartApp()
 }
