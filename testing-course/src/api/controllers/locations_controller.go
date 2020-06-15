@@ -9,7 +9,7 @@ import (
 
 // GetCountry fetches a country by :country_id query param
 func GetCountry(c *gin.Context) {
-	country, err := services.GetCountry(c.Param("country_id"))
+	country, err := services.LocationsService.GetCountry(c.Param("country_id"))
 	if err != nil {
 		c.JSON(err.Status, err)
 		return
