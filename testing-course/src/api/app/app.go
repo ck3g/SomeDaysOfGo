@@ -4,6 +4,7 @@ import "github.com/gin-gonic/gin"
 
 var router = gin.Default()
 
+// StartApp starts the main application
 func StartApp() {
 	mapUrls()
 
