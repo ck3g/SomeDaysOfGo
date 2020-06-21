@@ -24,18 +24,19 @@ type User struct {
 
 func init() {
 	var err error
-	dbClient, err = sql.Open("mysql", "this is a connection string")
+	dbClient, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "root", "", "127.0.0.1:3306", "go_sql_client_example"))
 	if err != nil {
 		panic(err)
 	}
 }
 
 func main() {
-	user, err := GetUser(123)
+	user, err := GetUser(1)
 	if err != nil {
 		panic(err)
 	}
 
+	fmt.Println(user.ID)
 	fmt.Println(user.Email)
 }
 

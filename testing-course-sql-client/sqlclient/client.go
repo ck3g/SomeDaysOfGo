@@ -12,13 +12,13 @@ type client struct {
 type row struct {
 }
 
-// SqlClient provides an interface of SQL Client
-type SqlClient interface {
+// SQLClient provides an interface of SQL Client
+type SQLClient interface {
 	Query(query string, args ...interface{}) (*row, error)
 }
 
 // Open creates a connection with provided driver name
-func Open(driverName, dataSourceString string) (SqlClient, error) {
+func Open(driverName, dataSourceString string) (SQLClient, error) {
 	if driverName == "" {
 		return nil, errors.New("invalid driver name")
 	}
