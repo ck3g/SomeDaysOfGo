@@ -1,10 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 
+	"github.com/ck3g/SomeDaysOfGo/testing-course-sql-client/sqlclient"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -13,7 +13,7 @@ const (
 )
 
 var (
-	dbClient *sql.DB
+	dbClient sqlclient.SQLClient
 )
 
 // User represents a user model
@@ -24,7 +24,7 @@ type User struct {
 
 func init() {
 	var err error
-	dbClient, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "root", "", "127.0.0.1:3306", "go_sql_client_example"))
+	dbClient, err = sqlclient.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "root", "", "127.0.0.1:3306", "go_sql_client_example"))
 	if err != nil {
 		panic(err)
 	}
@@ -46,9 +46,10 @@ func GetUser(id int64) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var user User
-	for rows.Next() {
+	for rows.HasNext() {
 		if err := rows.Scan(&user.ID, &user.Email); err != nil {
 			return nil, err
 		}
