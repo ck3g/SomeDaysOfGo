@@ -23,6 +23,9 @@ type User struct {
 }
 
 func init() {
+	// Start mock server to avoid using the real DB
+	sqlclient.StartMockServer()
+
 	var err error
 	dbClient, err = sqlclient.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "root", "", "127.0.0.1:3306", "go_sql_client_example"))
 	if err != nil {
@@ -42,6 +45,17 @@ func main() {
 
 // GetUser fetches a user by ID
 func GetUser(id int64) (*User, error) {
+	sqlclient.AddMock(sqlclient.Mock{
+		Query:   "SELECT id, email FROM users WHERE id=%d;",
+		Args:    []interface{}{1},
+		Error:   errors.New("error creating query"),
+		Columns: []string{"id", "email"},
+		Rows: [][]interface{}{
+			{1, "email1"},
+			{2, "email2"},
+		},
+	})
+
 	rows, err := dbClient.Query(fmt.Sprintf(queryGetUser, id))
 	if err != nil {
 		return nil, err

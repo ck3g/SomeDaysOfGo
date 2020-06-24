@@ -15,6 +15,7 @@ const (
 )
 
 var isMocked bool
+var dbClient SQLClient
 
 type client struct {
 	db *sql.DB
@@ -44,9 +45,9 @@ func isProduction() bool {
 
 // Open creates a connection with provided driver name
 func Open(driverName, dataSourceString string) (SQLClient, error) {
-	if !isProduction() || isMocked {
-		client := clientMock{}
-		return &client, nil
+	if isMocked && !isProduction() {
+		dbClient = &clientMock{}
+		return dbClient, nil
 	}
 
 	if driverName == "" {
@@ -58,11 +59,11 @@ func Open(driverName, dataSourceString string) (SQLClient, error) {
 		return nil, err
 	}
 
-	c := client{
+	dbClient = &client{
 		db: database,
 	}
 
-	return c, nil
+	return dbClient, nil
 }
 
 func (c client) Query(query string, args ...interface{}) (rows, error) {
