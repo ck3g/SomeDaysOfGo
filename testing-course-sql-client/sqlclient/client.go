@@ -3,8 +3,15 @@ package sqlclient
 import (
 	"database/sql"
 	"errors"
+	"os"
 
+	// Needs for MySQL driver
 	_ "github.com/go-sql-driver/mysql"
+)
+
+const (
+	goEnvironment = "GO_ENVIRONMENT"
+	production    = "production"
 )
 
 type client struct {
@@ -17,6 +24,10 @@ type row struct {
 // SQLClient provides an interface of SQL Client
 type SQLClient interface {
 	Query(query string, args ...interface{}) (rows, error)
+}
+
+func isProduction() bool {
+	return os.Getenv(goEnvironment) == production
 }
 
 // Open creates a connection with provided driver name
