@@ -9,9 +9,9 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	count := 60
+	count := 30
 	for i := 0; i < count; i++ {
-		q := hardSubtractionQuestion()
+		q := extraHardSubtractionQuestion()
 		fmt.Println(q)
 	}
 }
@@ -58,6 +58,18 @@ func hardSubtractionQuestion() string {
 	diff := randomInRange(1, 50)
 	minuend := randomInRange(diff, 99)
 	subtrahend := minuend - diff
+
+	return fmt.Sprintf("%d - %d = __", minuend, subtrahend)
+}
+
+func extraHardSubtractionQuestion() string {
+	subtrahendOnes := randomInRange(2, 9)
+	minuendOnes := randomInRange(1, subtrahendOnes-1)
+	minuendDozen := randomInRange(2, 9)
+	subtrahendDozen := randomInRange(1, minuendDozen-1)
+
+	minuend := minuendDozen*10 + minuendOnes
+	subtrahend := subtrahendDozen*10 + subtrahendOnes
 
 	return fmt.Sprintf("%d - %d = __", minuend, subtrahend)
 }
