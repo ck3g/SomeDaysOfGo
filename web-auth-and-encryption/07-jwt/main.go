@@ -1,10 +1,13 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gofrs/uuid"
 )
 
 type UserClaims struct {
@@ -24,24 +27,46 @@ func (u *UserClaims) Valid() error {
 	return nil
 }
 
-var key []byte
-
 func main() {
-	for i := 1; i <= 64; i++ {
-		key = append(key, byte(i))
-	}
-
 }
 
 func createToken(c *UserClaims) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS512, c)
-	signedToken, err := t.SignedString(key)
+	signedToken, err := t.SignedString(keys[currentKid])
 	if err != nil {
 		return "", fmt.Errorf("Error in createToken when signing token")
 	}
 
 	return signedToken, nil
 }
+
+func generateNewKey() error {
+	newKey := make([]byte, 64)
+	_, err := io.ReadFull(rand.Reader, newKey)
+	if err != nil {
+		return fmt.Errorf("Error in generateNewKey while generating key: %w", err)
+	}
+
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return fmt.Errorf("Error in generateNewKey while generating UUID: %w", err)
+	}
+
+	keys[uid.String()] = key{
+		key:     newKey,
+		created: time.Now(),
+	}
+
+	return nil
+}
+
+type key struct {
+	key     []byte
+	created time.Time
+}
+
+var currentKid = ""
+var keys = map[string]key{}
 
 func parseToken(signedToken string) (*UserClaims, error) {
 	claims := &UserClaims{}
@@ -50,7 +75,19 @@ func parseToken(signedToken string) (*UserClaims, error) {
 			return nil, fmt.Errorf("Invalid signing algorithm")
 		}
 
-		return key, nil
+		// Check if the token with the KeyID is in the list of the keys
+		// Where the list of the keys can be rotated in order to generate new keys from time to time
+		kid, ok := t.Header["kid"].(string)
+		if !ok {
+			return nil, fmt.Errorf("Invalid key ID")
+		}
+
+		k, ok := keys[kid]
+		if !ok {
+			return nil, fmt.Errorf("Invalid key ID")
+		}
+
+		return k, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Error in parseToken while parsing token: %w", err)
