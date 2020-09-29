@@ -9,6 +9,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+type myClaims struct {
+	jwt.StandardClaims
+	Email string
+}
+
+const myKey = "a very secret key"
+
 func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/submit", submit)
@@ -16,12 +23,6 @@ func main() {
 }
 
 func getJWT(msg string) (string, error) {
-	myKey := "a very secret key"
-
-	type myClaims struct {
-		jwt.StandardClaims
-		Email string
-	}
 
 	claims := myClaims{
 		StandardClaims: jwt.StandardClaims{
@@ -71,18 +72,31 @@ func home(w http.ResponseWriter, r *http.Request) {
 		c = &http.Cookie{}
 	}
 
-	isEqual := false
+	ss := c.Value
+	afterVerificationToken, err := jwt.ParseWithClaims(ss, &myClaims{}, func(beforeVerificationToken *jwt.Token) (interface{}, error) {
+		if beforeVerificationToken.Method.Alg() != jwt.SigningMethodHS256.Alg() {
+			return nil, fmt.Errorf("SOMEONE TRIED TO HACK changed signing method")
+		}
+		return []byte(myKey), nil
+	})
 
+	// StandardClaims has the `Valid()` error method which means it implements `Claims` interface
+	// ...when you ParseWithClaims the `Valid()` gets run and the `token.Valid` field will be `true`
+
+	isEqual := err == nil && afterVerificationToken.Valid
 	message := "Not logged in"
 	if isEqual {
 		message = "Logged in"
+		claims := afterVerificationToken.Claims.(*myClaims)
+		fmt.Println(claims.Email)
+		fmt.Println(claims.ExpiresAt)
 	}
 
 	html := `
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			<title>HMAC - example</title>
+			<title>JWT - example</title>
 		</head>
 		<body>
 			<p> Cookie value: ` + c.Value + `</p>
