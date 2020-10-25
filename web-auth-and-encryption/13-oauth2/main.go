@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +12,20 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
+
+// Key is GitHub Id, value is user ID
+var githubConnections map[string]string
+
+// JSON layout: {"data":{"viewer":{"id":"...","login":"...","name":"..."}}}
+type githubResponse struct {
+	Data struct {
+		User struct {
+			ID       string `json:"id"`
+			Username string `json:"login"`
+			Name     string `json:"name"`
+		} `json:"viewer"`
+	} `json:"data"`
+}
 
 var githubOauthConfig = &oauth2.Config{
 	Endpoint: github.Endpoint,
@@ -85,11 +99,27 @@ func completeGitHubOAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	bs, err := ioutil.ReadAll(resp.Body)
+	var gr githubResponse
+	err = json.NewDecoder(resp.Body).Decode(&gr)
 	if err != nil {
-		http.Error(w, "Couldn't read GitHub information", http.StatusInternalServerError)
-		return
+		log.Println(err)
+		http.Error(w, "GitHub invalid response", http.StatusInternalServerError)
 	}
 
-	log.Println(string(bs))
+	id := gr.Data.User.ID
+	// username := gr.Data.User.Username
+	// naame := gr.Data.User.Name
+	log.Printf("%+v\n", gr)
+
+	// Fake DB, finds a user by ID
+	userID, ok := githubConnections[id]
+
+	if !ok {
+		// register a user
+		userID = "A_NEW_USER_ID"
+	}
+
+	log.Printf("Login a user with ID %s\n", userID)
+
+	// login a user
 }
