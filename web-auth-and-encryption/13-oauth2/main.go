@@ -3,8 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
@@ -29,8 +32,8 @@ func main() {
 	githubOauthConfig.ClientSecret = *secret
 
 	http.HandleFunc("/", index)
-	http.HandleFunc("/oauth/github", startGitHubOAuth)
-	http.HandleFunc("/oauth/callback", completeGitHubOAuth)
+	http.HandleFunc("/oauth2/github", startGitHubOAuth)
+	http.HandleFunc("/oauth2/callback", completeGitHubOAuth)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -42,7 +45,7 @@ func index(w http.ResponseWriter, r *http.Request) {
   <title>Document</title>
 <head>
 <body>
-  <form action="/oauth/github" method="post">
+  <form action="/oauth2/github" method="post">
     <input type="submit" value="Login with GitHub">
   </form>
 </body>
@@ -74,4 +77,19 @@ func completeGitHubOAuth(w http.ResponseWriter, r *http.Request) {
 	tokenSource := githubOauthConfig.TokenSource(r.Context(), token)
 	client := oauth2.NewClient(r.Context(), tokenSource)
 
+	requestBody := strings.NewReader(`{"query": "query {viewer {id login name}}"`)
+	resp, err := client.Post("https://api.github.com/graphql", "application/json", requestBody)
+	if err != nil {
+		http.Error(w, "Couldn't get user", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Couldn't read GitHub information", http.StatusInternalServerError)
+		return
+	}
+
+	log.Println(string(bs))
 }
