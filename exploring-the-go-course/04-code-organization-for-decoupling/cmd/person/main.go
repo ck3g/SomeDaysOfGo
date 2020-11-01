@@ -8,6 +8,8 @@ import (
 	"github.com/ck3g/SomeDaysOfGo/exploring-the-go-course/04-code-organization-for-decoupling/storage/postgres"
 )
 
+// Accessor is how to strore or retrieve a person
+// When retrieving a person, if they do not exist, return the zero value
 type Accessor interface {
 	Save(n int, p models.Person)
 	Retrieve(n int) models.Person

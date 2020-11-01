@@ -1,6 +1,6 @@
 package models
 
-// Person holds a person structure
+// Person is how the model stores a person
 type Person struct {
 	First string
 }
