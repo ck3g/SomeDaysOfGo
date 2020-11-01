@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ck3g/SomeDaysOfGo/exploring-the-go-course/04-code-organization-for-decoupling/models"
@@ -19,4 +20,16 @@ func TestPut(t *testing.T) {
 	if got != p {
 		t.Fatalf("want %v, got %v", p, got)
 	}
+}
+
+func ExamplePut() {
+	mdb := mongo.DB{}
+	p := models.Person{
+		First: "John",
+	}
+
+	Put(mdb, 1, p)
+	got := mdb.Retrieve(1)
+	fmt.Println(got)
+	// Output: {John}
 }
