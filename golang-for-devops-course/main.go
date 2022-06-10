@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -8,6 +9,17 @@ import (
 	"net/url"
 	"os"
 )
+
+// https://newnews-api.herokuapp.com/
+type News struct {
+	Items []struct {
+		ID        int    `json:"id"`
+		Title     string `json:"title"`
+		Link      string `json:"link"`
+		Points    int    `json:"points"`
+		CreatedAt string `json:"created_at"`
+	} `json:"items"`
+}
 
 func main() {
 	args := os.Args
@@ -34,5 +46,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("HTTP Status Code: %d\nBody: %s\n", response.StatusCode, body)
+	if response.StatusCode != http.StatusOK {
+		fmt.Printf("Invalid output (HTTP Code %d): %s\n", response.StatusCode, body)
+		os.Exit(1)
+	}
+
+	var news News
+
+	err = json.Unmarshal(body, &news)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%+v\n", news)
 }
