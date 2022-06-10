@@ -6,7 +6,12 @@ import (
 )
 
 func main() {
-	args := os.Args[1:]
+	args := os.Args
 
-	fmt.Printf("Hello world!\nArguments: %v\n", args)
+	if len(args) < 2 {
+		fmt.Println("Usage: ./app-name <argument>")
+		os.Exit(1)
+	}
+
+	fmt.Printf("Hello world!\nArguments: %v\n", args[1:])
 }
