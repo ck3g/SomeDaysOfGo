@@ -59,7 +59,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 
 	for _, fHeaders := range r.MultipartForm.File {
 		for _, hdr := range fHeaders {
-			uploadedFiles, err := func(uploadedFiles []*UploadedFile) ([]*UploadedFile, error) {
+			uploadedFiles, err = func(uploadedFiles []*UploadedFile) ([]*UploadedFile, error) {
 				var uploadedFile UploadedFile
 				inFile, err := hdr.Open()
 				if err != nil {
@@ -106,7 +106,7 @@ func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) (
 				var outFile *os.File
 				defer outFile.Close()
 
-				if outFile, err := os.Create(filepath.Join(uploadDir, uploadedFile.NewFileName)); err != nil {
+				if outFile, err = os.Create(filepath.Join(uploadDir, uploadedFile.NewFileName)); err != nil {
 					return nil, err
 				} else {
 					fileSize, err := io.Copy(outFile, inFile)
