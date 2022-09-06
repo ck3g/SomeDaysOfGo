@@ -12,3 +12,4 @@ gRPC-Master-Class/ssl/*
 !gRPC-Master-Class/ssl/instructions.sh
 
 building-a-module/app-upload/uploads/*
+building-a-module/toolkit/testdata/uploads/*
