@@ -10,3 +10,5 @@ WebDev/002-text-template-package/index.html
 
 gRPC-Master-Class/ssl/*
 !gRPC-Master-Class/ssl/instructions.sh
+
+building-a-module/app-upload/uploads/*

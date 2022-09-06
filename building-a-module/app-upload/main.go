@@ -53,5 +53,21 @@ func uploadFiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadOneFile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
 
+	t := toolkit.Tools{
+		MaxFileSize:      1024 * 1024 * 1024,
+		AllowedFileTypes: []string{"image/jpeg", "image/png", "image/gif"},
+	}
+
+	file, err := t.UploadOneFile(r, "./uploads")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	out := fmt.Sprintf("Uploaded %s to the uploads folder, renamed to %s\n", file.OriginalFileName, file.NewFileName)
+
+	_, _ = w.Write([]byte(out))
 }
