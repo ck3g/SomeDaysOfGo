@@ -162,3 +162,31 @@ func TestTools_CreateDirIfNotExist(t *testing.T) {
 
 	_ = os.Remove("./testdata/myDir")
 }
+
+var slugTests = []struct {
+	name          string
+	s             string
+	expected      string
+	errorExpected bool
+}{
+	{"valid string", "now is the time", "now-is-the-time", false},
+	{"empty string", "", "", true},
+	{"complex string", "Now is the time for all GOOD men! + fish & such &^123", "now-is-the-time-for-all-good-men-fish-such-123", false},
+	{"german string", "äöüß", "", true},
+	{"german string and roman characters", "hello worldäöüß", "hello-world", true},
+}
+
+func TestTools_Slugify(t *testing.T) {
+	var testTool Tools
+
+	for _, tt := range slugTests {
+		slug, err := testTool.Slugify(tt.s)
+		if err != nil && !tt.errorExpected {
+			t.Errorf("%s: error received with none expected: %s", tt.name, err.Error())
+		}
+
+		if !tt.errorExpected && slug != tt.expected {
+			t.Errorf("%s: wrong slug returned; expected %s but got %s", tt.name, tt.expected, slug)
+		}
+	}
+}
