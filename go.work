@@ -3,6 +3,7 @@ go 1.19
 use (
 	./building-a-module/app
 	./building-a-module/app-dir
+	./building-a-module/app-download
 	./building-a-module/app-slug
 	./building-a-module/app-upload
 	./building-a-module/toolkit
