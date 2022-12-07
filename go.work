@@ -9,5 +9,5 @@ use (
 	./building-a-module/app-upload
 	./building-a-module/toolkit
 	./golang-for-devops-course
-	./nutritional-score-project
+	./building-3-simple-projects-oreilly/nutritional-score-project
 )
