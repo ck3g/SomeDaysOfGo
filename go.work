@@ -1,6 +1,8 @@
 go 1.19
 
 use (
+	./building-3-simple-projects-oreilly/google-trends
+	./building-3-simple-projects-oreilly/nutritional-score-project
 	./building-a-module/app
 	./building-a-module/app-dir
 	./building-a-module/app-download
@@ -9,5 +11,4 @@ use (
 	./building-a-module/app-upload
 	./building-a-module/toolkit
 	./golang-for-devops-course
-	./building-3-simple-projects-oreilly/nutritional-score-project
 )
