@@ -3,6 +3,7 @@ go 1.19
 use (
 	./building-3-simple-projects-oreilly/google-trends
 	./building-3-simple-projects-oreilly/nutritional-score-project
+	./building-3-simple-projects-oreilly/translate
 	./building-a-module/app
 	./building-a-module/app-dir
 	./building-a-module/app-download
