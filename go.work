@@ -13,4 +13,5 @@ use (
 	./building-a-module/toolkit
 	./golang-for-devops-course
 	./coffeeco
+	./recommendation-system
 )
