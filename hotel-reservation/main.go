@@ -1,13 +1,20 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"flag"
+
+	"github.com/ck3g/SomeDaysOfGo/hotel-reservation/api"
+	"github.com/gofiber/fiber/v2"
+)
 
 func main() {
-	app := fiber.New()
-	app.Get("/foo", handleFoo)
-	app.Listen(":5005")
-}
+	listenAddr := flag.String("listenAddr", ":5005", "Server listen address of API")
+	flag.Parse()
 
-func handleFoo(c *fiber.Ctx) error {
-	return c.JSON(map[string]string{"msg": "working just fine!"})
+	app := fiber.New()
+	apiv1 := app.Group("/api/v1")
+
+	apiv1.Get("/users", api.HandleGetUsers)
+	apiv1.Get("/users/:id", api.HandleGetUser)
+	app.Listen(*listenAddr)
 }
