@@ -44,5 +44,5 @@ go get github.com/gofiber/fiber/v2
 ### Installing MongoDB as a Docker container
 
 ```
-docker run --name mongodb -d mongo:latest -p 27017:27017
+docker run --name mongodb -d -p 27017:27017 mongo:latest
 ```
