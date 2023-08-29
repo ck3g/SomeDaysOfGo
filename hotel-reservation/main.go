@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import "github.com/gofiber/fiber/v2"
 
 func main() {
-	fmt.Println("Hotel reservation!")
+	app := fiber.New()
+	app.Get("/foo", handleFoo)
+	app.Listen(":5005")
+}
+
+func handleFoo(c *fiber.Ctx) error {
+	return c.JSON(map[string]string{"msg": "working just fine!"})
 }
