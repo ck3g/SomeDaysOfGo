@@ -29,27 +29,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// ctx := context.Background()
-	// collection := client.Database(dbname).Collection(userCollection)
-	// user := types.User{
-	// 	FirstName: "John",
-	// 	LastName:  "Doe",
-	// }
-	// res, err := collection.InsertOne(ctx, user)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(res.InsertedID)
 
 	listenAddr := flag.String("listenAddr", ":5005", "Server listen address of API")
 	flag.Parse()
 
-	app := fiber.New()
+	app := fiber.New(config)
 	apiv1 := app.Group("/api/v1")
 
 	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
 	apiv1.Get("/users", userHandler.HandleGetUsers)
 	apiv1.Get("/users/:id", userHandler.HandleGetUser)
 	apiv1.Post("/users", userHandler.HandlePostUser)
+	apiv1.Put("/users/:id", userHandler.HandlePutUser)
+	apiv1.Delete("/users/:id", userHandler.HandleDeleteUser)
 	app.Listen(*listenAddr)
 }

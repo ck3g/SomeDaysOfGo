@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,13 +15,6 @@ const (
 	minPasswordLen  = 6
 )
 
-var (
-	ErrFirstNameTooShort = fmt.Sprintf("firstName length should be at least %d characters", minFirstNameLen)
-	ErrLastNameTooShort  = fmt.Sprintf("lastName length should be at least %d characters", minLastNameLen)
-	ErrPasswordTooShort  = fmt.Sprintf("password length should be at least %d characters", minPasswordLen)
-	ErrEmailNotValid     = "email is not valid"
-)
-
 type CreateUserParams struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -28,20 +22,42 @@ type CreateUserParams struct {
 	Password  string `json:"password"`
 }
 
-func (params CreateUserParams) Validate() []string {
-	errors := []string{}
+type UpdateUserParams struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Password  string `json:"password"`
+}
+
+func (p UpdateUserParams) ToBsonM() bson.M {
+	update := bson.M{}
+
+	if p.FirstName != "" {
+		update["firstName"] = p.FirstName
+	}
+	if p.LastName != "" {
+		update["lastName"] = p.LastName
+	}
+	if p.Password != "" {
+		update["encryptedPassword"] = p.Password
+	}
+
+	return update
+}
+
+func (params CreateUserParams) Validate() map[string]string {
+	errors := map[string]string{}
 
 	if len(params.FirstName) < minFirstNameLen {
-		errors = append(errors, ErrFirstNameTooShort)
+		errors["firstName"] = fmt.Sprintf("firstName length should be at least %d characters", minFirstNameLen)
 	}
 	if len(params.LastName) < minLastNameLen {
-		errors = append(errors, ErrLastNameTooShort)
+		errors["lastName"] = fmt.Sprintf("lastName length should be at least %d characters", minLastNameLen)
 	}
 	if len(params.Password) < minPasswordLen {
-		errors = append(errors, ErrPasswordTooShort)
+		errors["password"] = fmt.Sprintf("password length should be at least %d characters", minPasswordLen)
 	}
 	if !isValidEmail(params.Email) {
-		errors = append(errors, ErrEmailNotValid)
+		errors["email"] = "email is invalid"
 	}
 
 	return errors

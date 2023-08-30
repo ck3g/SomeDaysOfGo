@@ -1,9 +1,12 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/ck3g/SomeDaysOfGo/hotel-reservation/db"
 	"github.com/ck3g/SomeDaysOfGo/hotel-reservation/types"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserHandler struct {
@@ -21,6 +24,9 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 
 	user, err := h.userStore.GetUserByID(c.Context(), id)
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return fiber.ErrNotFound
+		}
 		return err
 	}
 
@@ -57,4 +63,31 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(user)
+}
+
+func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	var params types.UpdateUserParams
+	if err := c.BodyParser(&params); err != nil {
+		return err
+	}
+
+	err := h.userStore.UpdateUser(c.Context(), id, params)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(map[string]string{"updated": id})
+}
+
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	err := h.userStore.DeleteUser(c.Context(), id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(map[string]string{"message": "success"})
 }
