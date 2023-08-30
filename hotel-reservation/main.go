@@ -44,11 +44,12 @@ func main() {
 	listenAddr := flag.String("listenAddr", ":5005", "Server listen address of API")
 	flag.Parse()
 
-	app := fiber.New(config)
+	app := fiber.New()
 	apiv1 := app.Group("/api/v1")
 
 	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
 	apiv1.Get("/users", userHandler.HandleGetUsers)
 	apiv1.Get("/users/:id", userHandler.HandleGetUser)
+	apiv1.Post("/users", userHandler.HandlePostUser)
 	app.Listen(*listenAddr)
 }
