@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ck3g/SomeDaysOfGo/hotel-reservation/types"
 	"go.mongodb.org/mongo-driver/bson"
@@ -9,7 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type Dropper interface {
+	Drop(context.Context) error
+}
+
 type UserStore interface {
+	Dropper
+
 	GetUserByID(ctx context.Context, id string) (*types.User, error)
 	GetUsers(ctx context.Context) ([]*types.User, error)
 	InsertUser(ctx context.Context, user *types.User) (*types.User, error)
@@ -22,10 +29,10 @@ type MongoUserStore struct {
 	coll   *mongo.Collection
 }
 
-func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
+func NewMongoUserStore(client *mongo.Client, dbname string) *MongoUserStore {
 	return &MongoUserStore{
 		client: client,
-		coll:   client.Database(DBNAME).Collection(userCollection),
+		coll:   client.Database(dbname).Collection(userCollection),
 	}
 }
 
@@ -91,4 +98,9 @@ func (s *MongoUserStore) DeleteUser(ctx context.Context, id string) error {
 	}
 
 	return nil
+}
+
+func (s *MongoUserStore) Drop(ctx context.Context) error {
+	fmt.Println("-- dropping user collection")
+	return s.coll.Drop(ctx)
 }
