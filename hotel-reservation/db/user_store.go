@@ -10,6 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const userCollection = "users"
+
 type Dropper interface {
 	Drop(context.Context) error
 }
