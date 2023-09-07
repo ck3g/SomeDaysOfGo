@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	client     *mongo.Client
 	roomStore  db.RoomStore
 	hotelStore db.HotelStore
 	ctx        = context.Background()
@@ -29,16 +28,17 @@ func seedHotel(name, location string, rating int) {
 
 	rooms := []types.Room{
 		{
-			Type:      types.SingleRoomType,
-			BasePrice: 99.9,
+			Size:  "small",
+			Price: 99.9,
 		},
 		{
-			Type:      types.DeluxeRoomType,
-			BasePrice: 199.9,
+			Size:  "medium",
+			Price: 199.9,
 		},
 		{
-			Type:      types.SeaSideRoomType,
-			BasePrice: 299.9,
+			Size:    "large",
+			SeaSide: true,
+			Price:   299.9,
 		},
 	}
 
